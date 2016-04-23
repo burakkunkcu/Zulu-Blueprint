@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Zulu</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="osex">zikerim</string>
+    <string name="createTask">Create</string>
+    <string name="username">Task Name</string>
+    <string name="password">Members</string>
+    <string name="cancel">Cancel</string>
+</resources>
