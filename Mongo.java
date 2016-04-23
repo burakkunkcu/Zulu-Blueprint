@@ -57,9 +57,9 @@ public class Mongo {
 	// Remove project
 	public boolean removeProject(String id) {
 		DBConnect();
-		DBCollection users = db.getCollection("projects");
+		DBCollection projects = db.getCollection("projects");
 		BasicDBObject query = new BasicDBObject("id", id);
-		DBCursor cursor = users.find(query);
+		DBCursor cursor = projects.find(query);
 		boolean b = false;
 		try {
 			while (cursor.hasNext()) {
@@ -76,9 +76,9 @@ public class Mongo {
 	// Get project
 	public Project getProject(String id) {
 		DBConnect();
-		DBCollection users = db.getCollection("projects");
+		DBCollection projects = db.getCollection("projects");
 		BasicDBObject query = new BasicDBObject("id", id);
-		DBCursor cursor = users.find(query);
+		DBCursor cursor = projects.find(query);
 		Project tmp = null;
 		try {
 			while (cursor.hasNext()) {
@@ -150,8 +150,8 @@ public class Mongo {
 	public boolean createCalendar(Calendar c) {
 		DBConnect();
 		DBObject obj = createDBObject(c);
-		DBCollection users = db.getCollection("calendar");
-		WriteResult result = users.save(obj);
+		DBCollection calendars = db.getCollection("calendars");
+		WriteResult result = calendars.save(obj);
 		DBDisconnect();
 		return result.isUpdateOfExisting();
 	}
@@ -159,13 +159,13 @@ public class Mongo {
 	// Delete Calendar
 	public boolean deleteCalendar(String id) {
 		DBConnect();
-		DBCollection users = db.getCollection("tasks");
+		DBCollection calendars = db.getCollection("calendars");
 		BasicDBObject query = new BasicDBObject("id", id);
-		DBCursor cursor = users.find(query);
+		DBCursor cursor = calendars.find(query);
 		boolean b = false;
 		try {
 			while (cursor.hasNext()) {
-				WriteResult result = users.remove((cursor.next()));
+				WriteResult result = calendars.remove((cursor.next()));
 				b = result.isUpdateOfExisting();
 			}
 		} finally {
@@ -177,10 +177,10 @@ public class Mongo {
 
 	public Calendar getCalendar(String id) {
 		DBConnect();
-		DBCollection users = db.getCollection("calendars");
+		DBCollection calendars = db.getCollection("calendars");
 		BasicDBObject query = new BasicDBObject("id", id);
 		Calendar tmp = null;
-		DBCursor cursor = users.find(query);
+		DBCursor cursor = calendars.find(query);
 		try {
 			while (cursor.hasNext()) {
 				DBObject dbobj = cursor.next();
