@@ -7,4 +7,6 @@
     <string name="username">Task Name</string>
     <string name="password">Members</string>
     <string name="cancel">Cancel</string>
+    <string name="pprogress">Project Progress</string>
+    <string name="allprogress">All Progress</string>
 </resources>

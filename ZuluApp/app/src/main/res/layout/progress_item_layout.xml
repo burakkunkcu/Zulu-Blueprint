@@ -1,0 +1,55 @@
+<android.support.v7.widget.CardView
+    android:id="@+id/cardProgressView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/activity_vertical_margin"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="8dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Project Progress"
+            android:textSize="30sp"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@id/progressBar"
+            android:layout_alignParentStart="true" />
+
+        <ProgressBar
+            android:layout_width="270dp"
+            android:layout_height="30dp"
+            android:id="@+id/progressBar"
+            android:layout_below="@id/title"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="15dp"
+            style="?android:attr/progressBarStyleHorizontal"/>
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="%"
+            android:id="@+id/percent"
+            android:layout_alignTop="@id/progressBar"
+            android:layout_toRightOf="@id/progressBar"
+            android:layout_marginLeft="15dp"
+            android:textAlignment="center"
+
+
+            />
+
+
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

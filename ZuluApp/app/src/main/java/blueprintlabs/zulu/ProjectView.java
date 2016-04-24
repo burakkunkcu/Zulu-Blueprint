@@ -22,9 +22,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import blueprintlabs.zulu.resources.Action;
+import blueprintlabs.zulu.resources.Task;
 import blueprintlabs.zulu.resources.User;
 
-public class ProjectView extends AppCompatActivity implements PersonFragment.OnListFragmentInteractionListener{
+public class ProjectView extends AppCompatActivity implements PersonFragment.OnListFragmentInteractionListener,
+                                                                DashboardFragment.OnListFragmentInteractionListener,
+                                                                    ProgressFragment.OnListFragmentInteractionListener,
+                                                                        UserFragment.OnListFragmentInteractionListener{
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -140,42 +145,12 @@ public class ProjectView extends AppCompatActivity implements PersonFragment.OnL
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.osex));
+            textView.setText("WIP");
             return rootView;
         }
     }
 
-    public static class yarakrFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
 
-        public yarakrFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.osex));
-            return rootView;
-        }
-    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -192,8 +167,12 @@ public class ProjectView extends AppCompatActivity implements PersonFragment.OnL
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch(position) {
-                default: return PlaceholderFragment.newInstance(position + 1);
+
+                case 0: return DashboardFragment.newInstance(0);
                 case 2: return PersonFragment.newInstance(0);
+                case 3: return UserFragment.newInstance(0);
+                case 4: return ProgressFragment.newInstance(0);
+                default: return PlaceholderFragment.newInstance(position + 1);
             }
         }
 
@@ -211,9 +190,9 @@ public class ProjectView extends AppCompatActivity implements PersonFragment.OnL
                 case 1:
                     return "Calendar";
                 case 2:
-                    return "Overview";
-                case 3:
                     return "Tasks";
+                case 3:
+                    return "Overview";
                 case 4:
                     return "Progress";
                 case 5:
@@ -225,6 +204,9 @@ public class ProjectView extends AppCompatActivity implements PersonFragment.OnL
     }
 
     public void onListFragmentInteraction(User item){}
+    public void onListFragmentInteraction(Action item){}
+    public void onListFragmentInteraction(Task item){}
+
 
     public void updateData(){}
 }

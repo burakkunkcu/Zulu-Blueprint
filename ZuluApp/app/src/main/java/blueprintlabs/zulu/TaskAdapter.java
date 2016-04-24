@@ -58,8 +58,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     public void onBindViewHolder(final ViewHolder holder, int position) {
         if(getItemViewType(position) == VIEW_TYPE_CELL){
             holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
+            holder.mIdView.setText(mValues.get(position).name);
+            holder.mContentView.setText(mValues.get(position).desc);
             holder.iV.setImageResource(mValues.get(position).imageID);
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
