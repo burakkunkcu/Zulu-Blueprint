@@ -11,7 +11,7 @@ public class Calendar {
     private ArrayList<Task> tasks;
 
     // constructor
-    private Calendar(ArrayList<Task> tasks) {
+    public Calendar(ArrayList<Task> tasks) {
         this.tasks = tasks;
     }
 
