@@ -1,9 +1,12 @@
 package blueprintlabs.zulu.resources;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Ahmet Burak on 23.4.2016.
  */
-public class Task {
+public class Task implements Parcelable{
 
     // properties
     private String ID;
@@ -11,6 +14,7 @@ public class Task {
     private String date;
     private int progress;
     private boolean active;
+    private int mData;
 
     // constructor
     public Task(String description, String date, int progress, boolean active) {
@@ -19,6 +23,29 @@ public class Task {
         this.date = date;
         this.progress = progress;
         this.active = active;
+    }
+
+    public int describeContents(){
+        return 0;
+    }
+
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(mData);
+    }
+
+    public static final Parcelable.Creator<Task> CREATOR
+            = new Parcelable.Creator<Task>() {
+        public Task createFromParcel(Parcel in) {
+            return new Task(in);
+        }
+
+        public Task[] newArray(int size) {
+            return new Task[size];
+        }
+    };
+
+    private Task(Parcel in) {
+        mData = in.readInt();
     }
 
     // methods

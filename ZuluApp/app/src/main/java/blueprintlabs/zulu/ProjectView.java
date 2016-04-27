@@ -29,7 +29,8 @@ import blueprintlabs.zulu.resources.User;
 public class ProjectView extends AppCompatActivity implements PersonFragment.OnListFragmentInteractionListener,
                                                                 DashboardFragment.OnListFragmentInteractionListener,
                                                                     ProgressFragment.OnListFragmentInteractionListener,
-                                                                        UserFragment.OnListFragmentInteractionListener{
+                                                                        UserFragment.OnListFragmentInteractionListener,
+                                                                            CalendarFragment.OnFragmentInteractionListener{
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -169,6 +170,7 @@ public class ProjectView extends AppCompatActivity implements PersonFragment.OnL
             switch(position) {
 
                 case 0: return DashboardFragment.newInstance(0);
+                case 1: return CalendarFragment.newInstance("", "");
                 case 2: return PersonFragment.newInstance(0);
                 case 3: return UserFragment.newInstance(0);
                 case 4: return ProgressFragment.newInstance(0);
@@ -206,6 +208,7 @@ public class ProjectView extends AppCompatActivity implements PersonFragment.OnL
     public void onListFragmentInteraction(User item){}
     public void onListFragmentInteraction(Action item){}
     public void onListFragmentInteraction(Task item){}
+    public void onFragmentInteraction(User user){}
 
 
     public void updateData(){}
