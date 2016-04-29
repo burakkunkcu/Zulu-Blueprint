@@ -19,12 +19,13 @@ import blueprintlabs.zulu.resources.User;
 public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.ViewHolder> {
 
     private final List<Project> mValues;
-    //private final Projects.OnListFragmentInteractionListener mListener;
+    private final ProjectsAdapter.OnListFragmentInteractionListener mListener;
     private Context mContext;
 
     public ProjectsAdapter(List<Project> items, Context context) {
         mValues = items;
         mContext = context;
+        mListener = (OnListFragmentInteractionListener) context;
     }
 
     @Override
@@ -37,17 +38,17 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.ViewHo
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).getName());
+        final int pos = position;
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /**
+
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onListFragmentInteraction(pos);
                 }
-                 **/
             }
         });
     }
@@ -66,7 +67,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.ViewHo
             super(view);
             mView = view;
             cv = (CardView) view.findViewById(R.id.projectsCardView);
-            mIdView = (TextView) view.findViewById(R.id.id);
+            mIdView = (TextView) view.findViewById(R.id.title);
         }
 
         @Override
@@ -75,5 +76,9 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.ViewHo
         }
     }
 
+    public interface OnListFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onListFragmentInteraction(int position);
+    }
 
 }

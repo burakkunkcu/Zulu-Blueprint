@@ -1,5 +1,7 @@
 package blueprintlabs.zulu;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import blueprintlabs.zulu.resources.Action;
+import blueprintlabs.zulu.resources.Project;
 import blueprintlabs.zulu.resources.Task;
 import blueprintlabs.zulu.resources.User;
 
@@ -30,7 +33,8 @@ public class ProjectView extends AppCompatActivity implements PersonFragment.OnL
                                                                 DashboardFragment.OnListFragmentInteractionListener,
                                                                     ProgressFragment.OnListFragmentInteractionListener,
                                                                         UserFragment.OnListFragmentInteractionListener,
-                                                                            CalendarFragment.OnFragmentInteractionListener{
+                                                                            CalendarFragment.OnFragmentInteractionListener
+                                                                                ,ChatFragment.OnFragmentInteractionListener{
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -47,10 +51,21 @@ public class ProjectView extends AppCompatActivity implements PersonFragment.OnL
      */
     private ViewPager mViewPager;
 
+    /**
+     *The {@Link Project} that will be represented
+     */
+    private Project project;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+        int ProjectNumber = (int) intent.getIntExtra("positionOfProject", 0);
+        //project = new Project();
+
+        //TODO USE THIS PROJECT NUMBER TO ACCESS THE SERVER AND POPULATE THE INFORMATION OF PROJECT
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -174,6 +189,7 @@ public class ProjectView extends AppCompatActivity implements PersonFragment.OnL
                 case 2: return PersonFragment.newInstance(0);
                 case 3: return UserFragment.newInstance(0);
                 case 4: return ProgressFragment.newInstance(0);
+                case 5: return ChatFragment.newInstance("","");
                 default: return PlaceholderFragment.newInstance(position + 1);
             }
         }
@@ -209,6 +225,7 @@ public class ProjectView extends AppCompatActivity implements PersonFragment.OnL
     public void onListFragmentInteraction(Action item){}
     public void onListFragmentInteraction(Task item){}
     public void onFragmentInteraction(User user){}
+    public void onFragmentInteraction(Uri uri){}
 
 
     public void updateData(){}

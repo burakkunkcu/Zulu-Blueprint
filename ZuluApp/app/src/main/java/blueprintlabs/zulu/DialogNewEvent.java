@@ -54,7 +54,7 @@ public class DialogNewEvent extends DialogFragment {
         // Pass null as the parent view because its going in the dialog layout
         builder.setView(view)
                 // Add action buttons
-                .setPositiveButton("MEETUP!", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Create", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         String start_time = (String) startingTime.getSelectedItem();

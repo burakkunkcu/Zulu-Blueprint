@@ -144,7 +144,7 @@ public class CalendarFragment extends Fragment {
                     Bundle args = new Bundle();
                     //set clicked days date and month to arguments to the dialog fragment
                     Date today = cv.selectedDate;
-                    DialogNewEvent box = new DialogNewEvent();
+                    DialogMeetup box = new DialogMeetup();
                     SimpleDateFormat sdf = new SimpleDateFormat("dd MMMMMM");
                     args.putString("date", sdf.format(((Date) today)));
                     box.setArguments(args);
