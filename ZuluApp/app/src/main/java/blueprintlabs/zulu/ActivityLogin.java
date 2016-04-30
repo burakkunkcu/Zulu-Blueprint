@@ -74,6 +74,11 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
+        //If returning from register screen set the email to new account's
+        if(getIntent().getBooleanExtra("fromreg", false)){
+            mEmailView.setText(getIntent().getStringExtra("email"));
+        }
+
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
