@@ -9,5 +9,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context="blueprintlabs.zulu.DashboardFragment"
+    tools:context=".FragmentDashboard"
     tools:listitem="@layout/fragment_dashboard" />
