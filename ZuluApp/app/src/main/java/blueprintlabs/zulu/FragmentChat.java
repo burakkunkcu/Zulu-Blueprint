@@ -3,6 +3,7 @@ package blueprintlabs.zulu;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
@@ -14,8 +15,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 import blueprintlabs.zulu.adapters.ChatAdapter;
 import blueprintlabs.zulu.resources.Message;
+import blueprintlabs.zulu.resources.Project;
+import blueprintlabs.zulu.socket.Client;
 
 
 /**
@@ -83,6 +88,8 @@ public class FragmentChat extends Fragment {
         button = (Button) view.findViewById(R.id.send);
         input = (EditText) view.findViewById(R.id.message);
         lw = (ListView) view.findViewById(R.id.messages);
+
+
 
         adapter = new ChatAdapter(getActivity().getApplicationContext(), R.layout.chat_right);
         lw.setAdapter(adapter);
@@ -152,6 +159,38 @@ public class FragmentChat extends Fragment {
         adapter.add(new Message(message, sender));
         return true;
     }
+
+    boolean sendChatMessage(Message message){
+        adapter.add(message);
+        return true;
+    }
+
+    public class getInitialMessages extends AsyncTask<Void, Void, ArrayList<Message>>{
+        private final Project project;
+        private final String[] args;
+
+        public getInitialMessages(){
+            project =((ActivityProjectView) FragmentChat.this.getActivity()).globalProject;
+            args = new String[1];
+            args[0] = project.getID();
+        }
+
+        @Override
+        protected ArrayList<Message> doInBackground(Void... params) {
+            Client client = new Client("project", "chat", args);
+            client.start();
+            client.run();
+            return (ArrayList<Message>)client.getResult();
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Message> messages) {
+            for (Message m : messages){
+                sendChatMessage(m);
+            }
+        }
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
