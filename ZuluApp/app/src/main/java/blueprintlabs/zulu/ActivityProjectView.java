@@ -1,6 +1,7 @@
 package blueprintlabs.zulu;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -31,13 +33,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import java.sql.ClientInfoStatus;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import blueprintlabs.zulu.resources.Action;
 import blueprintlabs.zulu.resources.Project;
 import blueprintlabs.zulu.resources.Task;
 import blueprintlabs.zulu.resources.User;
+import blueprintlabs.zulu.socket.Client;
 
 public class ActivityProjectView extends AppCompatActivity implements FragmentTasks.OnListFragmentInteractionListener,
                                                                 FragmentDashboard.OnListFragmentInteractionListener,
@@ -69,7 +76,9 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
     /**
      *The {@Link Project} that will be represented
      */
-    private Project project;
+    public Project globalProject;
+    public User globalUser;
+    public ArrayList<Date> meetupDates;
 
     /**
      * Represents if a service is bound to the activity and the bound service
@@ -130,9 +139,16 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //TODO INITIATE THE PROJECT HERE
         Intent intent = getIntent();
-        int ProjectNumber = (int) intent.getIntExtra("positionOfProject", 0);
-        //project = new Project();
+        String projectID = intent.getStringExtra("projectID");
+        if(globalProject == null){
+            new getProjectbyID(projectID).execute();
+        }
+
+        if(globalUser == null){
+            new getUserTask(intent.getStringExtra("email")).execute();
+        }
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(SERVICE_MESSAGE);
@@ -147,7 +163,7 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-
+        //getActionBar().setTitle(project.getName());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -209,9 +225,7 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
                 //refresh the display, get new values
                 //ViewGroup vg = findViewById (R.layout.activity_main);
                 //vg.invalidate();
-                if (mViewPager != null){
-                    mViewPager.getAdapter().notifyDataSetChanged();
-                }
+                refresh();
                 return true;
 
             default:
@@ -330,31 +344,11 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
         }
     }
 
-    public class RefreshAsyncTask extends AsyncTask<Void,Void,Void> {
-        private Context context;
-
-        public RefreshAsyncTask(Context context){
-            this.context=context;
-        }
-        @Override
-        protected void onPreExecute() {
-            // write show progress Dialog code here
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            // write service code here
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            Toast.makeText(context, "Refreshed", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(context, ActivityProjectView.class);
-            context.startActivity(intent);
-            ((Activity)context).finish();
+    private void refresh(){
+        for(int i = 0; i <= 5; i++){
+            Fragment fragment = mSectionsPagerAdapter.getRegisteredFragment(i);
+            final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.attach(fragment).detach(fragment).commit();
         }
     }
 
@@ -365,6 +359,131 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
         intent.putExtra("sender", sender);
         intent.putExtra("message", message);
         sendBroadcast(intent);
+    }
+
+    public class getProjectbyID extends AsyncTask<Void, Void, Project>{
+        private final String ID;
+        private final String[] args;
+
+        public getProjectbyID(String projectID){
+            ID = projectID;
+            args = new String[1];
+            args[0] = ID;
+        }
+
+        @Override
+        protected Project doInBackground(Void... params) {
+            Client client = new Client("project", "get", args);
+            client.start();
+            client.run();
+            Project project = (Project) client.getResult();
+            return project;
+        }
+
+        @Override
+        protected void onPostExecute(Project project) {
+            if (project != null){
+                globalProject = project;
+            }
+        }
+    }
+
+    public class getUserTask extends AsyncTask<Void, Void, User> {
+        private final String mEmail;
+        private final String[] args;
+
+        public getUserTask(String email){
+            mEmail = email;
+            args = new String[1];
+            args[0] = mEmail;
+        }
+
+        @Override
+        protected User doInBackground(Void... params) {
+            Client client = new Client("user", "get", args);
+            client.start();
+            client.run();
+            User user = (User) client.getResult();
+            return user;
+        }
+
+
+        protected void onPostExecute(User user) {
+            if (user != null){
+                globalUser = user;
+            }
+        }
+    }
+
+    public class MeetupTask extends AsyncTask<Void, Void, ArrayList<Date>>{
+        final String[] args;
+
+        public MeetupTask(){
+            args = new String[2];
+            args[0] = globalProject.getID();
+            Gson gson = new Gson();
+            String jsonInString = gson.toJson(new Date());
+            args[1] = (new Date()).toString();
+        }
+
+        @Override
+        protected ArrayList<Date> doInBackground(Void... params) {
+            Client client = new Client("calendar", "meetup", args);
+            client.start();
+            client.run();
+
+            return (ArrayList<Date>) client.getResult();
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Date> result) {
+            if(result != null){
+                meetupDates = result;
+            }
+        }
+
+    }
+
+    public ArrayList<Date> getMeetupDates(){
+        new MeetupTask().execute();
+        return meetupDates;
+    }
+
+    public class newTask extends AsyncTask<Void, Void, Boolean>{
+        final String[] args;
+        final Date dateStart;
+        final Date datefinish;
+
+        public newTask(String name, Date dateStart, Date datefinish){
+            args = new String[2];
+            args[0] = name;
+            this.dateStart = dateStart;
+            this.datefinish = datefinish;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            boolean bool = true;
+            for (int i = dateStart.getHours(); i <= datefinish.getHours(); i++){
+                Date d = dateStart;
+                d.setHours(i);
+                Gson gson = new Gson();
+                String jsonInString = gson.toJson(d);
+                args[1] = jsonInString;
+                Client client = new Client("task", "create", args);
+                client.start();
+                client.run();
+                bool = bool && (boolean) client.getResult();
+            }
+            return bool;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result){
+                Toast.makeText(ActivityProjectView.this, "Event created", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     public void onListFragmentInteraction(User item){}
