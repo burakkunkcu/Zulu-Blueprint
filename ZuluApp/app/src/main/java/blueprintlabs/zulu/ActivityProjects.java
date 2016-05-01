@@ -3,6 +3,7 @@ package blueprintlabs.zulu;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -44,10 +45,6 @@ public class ActivityProjects extends AppCompatActivity implements ProjectsAdapt
         }
 
         projectsList = new ArrayList<Project>();
-
-        if(currentUser != null){
-
-        }
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
@@ -99,10 +96,10 @@ public class ActivityProjects extends AppCompatActivity implements ProjectsAdapt
             Client client = new Client("user", "getbyemail", args);
             client.start();
 
-            User user = (User) client.getResult(); //returns null
+            User user = (User) client.getResult();
             System.out.println("------------user-------------");
             System.out.println(mEmail);
-            System.out.println(client.getResult());
+            System.out.println(user);
             System.out.println("--------------user-----------");
             return user;
         }
@@ -137,12 +134,13 @@ public class ActivityProjects extends AppCompatActivity implements ProjectsAdapt
             args = new String[3];
             args[0] = mName;
             args[1] = mDesc;
-            args[2] = "";
+            args[2] = mUser.getID();
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             Client client = new Client("project", "create", args);
+            System.out.print(mUser.getID());
             client.start();
             return (boolean)client.getResult();
         }
@@ -180,7 +178,7 @@ public class ActivityProjects extends AppCompatActivity implements ProjectsAdapt
         protected void onPostExecute(Project project) {
             if(project != null) {
                 projectsList.add(project);
-                ActivityProjects.this.adapter.notifyDataSetChanged();
+                adapter.notifyItemInserted(projectsList.size() - 1);
             }
         }
     }

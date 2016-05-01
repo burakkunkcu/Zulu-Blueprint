@@ -9,6 +9,7 @@ import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +34,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 import blueprint.zulu.util.Action;
 import blueprint.zulu.util.*;
@@ -135,7 +137,7 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Inıtiate the globalProject and globalUser here
+        //Initiate the globalProject and globalUser here
         Intent intent = getIntent();
         String projectID = intent.getStringExtra("projectID");
         if(globalProject == null){
@@ -143,8 +145,20 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
         }
 
         if(globalUser == null){
-            new getUserTask(intent.getStringExtra("email")).execute();
+            System.out.println("intent: " +  intent.getStringExtra("email"));
+            getUserTask task = new getUserTask(intent.getStringExtra("email"));
+            task.execute();
+            try {
+                task.get();
+            }
+            catch(ExecutionException e ){
+                e.printStackTrace();
+            }
+            catch(InterruptedException e){
+                e.printStackTrace();
+            }
         }
+
 
         //Intent filter to filter broadcasts we receive
         IntentFilter intentFilter = new IntentFilter();
@@ -334,9 +348,14 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
     //attach/detach all fragments to force redrawing of all fragments
     private void refresh(){
         for(int i = 0; i <= 5; i++){
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             Fragment fragment = mSectionsPagerAdapter.getRegisteredFragment(i);
-            final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.attach(fragment).detach(fragment).commit();
+            if(fragment != null) {
+                ft.attach(fragment).detach(fragment).commit();
+            }
+            else{
+                System.out.println("Error reresh: " + i);
+            }
         }
     }
 
@@ -393,9 +412,13 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
 
         @Override
         protected User doInBackground(Void... params) {
-            Client client = new Client("user", "get", args);
+            Client client = new Client("user", "getbyemail", args);
             client.start();
             User user = (User) client.getResult();
+            System.out.println("---------asyncats------------");
+            System.out.println(mEmail);
+            System.out.println(user);
+            System.out.println("-----------sdfsdfsdf---------");
             return user;
         }
 
@@ -404,6 +427,41 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
             if (user != null){
                 globalUser = user;
             }
+        }
+    }
+
+    public class getUserbyEmailTask extends AsyncTask<Void, Void, User> {
+        private final String mEmail;
+        private final String[] args;
+        private User foundUser;
+
+        public getUserbyEmailTask(String email){
+            mEmail = email;
+            args = new String[1];
+            args[0] = mEmail;
+        }
+
+        @Override
+        protected User doInBackground(Void... params) {
+            Client client = new Client("user", "getbyemail", args);
+            client.start();
+            User user = (User) client.getResult();
+            System.out.println("---------asyncats------------");
+            System.out.println(mEmail);
+            System.out.println(user);
+            System.out.println("-----------sdfsdfsdf---------");
+            return user;
+        }
+
+
+        protected void onPostExecute(User user) {
+            if (user != null){
+                foundUser = user;
+            }
+        }
+
+        public User getUser(){
+            return foundUser;
         }
     }
 
@@ -447,12 +505,12 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
     /**
      * AsyncTask to Create new task.
      */
-    public class newTask extends AsyncTask<Void, Void, Boolean>{
+    public class newTaskContinuous extends AsyncTask<Void, Void, Boolean>{
         final String[] args;
         final Date dateStart;
         final Date datefinish;
 
-        public newTask(String name, Date dateStart, Date datefinish){
+        public newTaskContinuous(String name, Date dateStart, Date datefinish){
             args = new String[2];
             args[0] = name;
             this.dateStart = dateStart;
@@ -481,6 +539,80 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
                 Toast.makeText(ActivityProjectView.this, "Event created", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public class newTask extends AsyncTask<Void, Void, String>{
+        final String[] args;
+        String taskID;
+
+        public newTask(String name, Date deadline){
+            args = new String[3];
+            args[0] = name;
+            Gson gson = new Gson();
+            String jsonInString = gson.toJson(deadline);
+            args[1] = jsonInString;
+            args[2] = ActivityProjectView.this.globalProject.getID();
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            Client client = new Client("task", "create", args);
+            client.start();
+            String s = (String) client.getResult();
+            String[] args2 = {ActivityProjectView.this.globalUser.getCalendar(), s};
+            Client client1 = new Client("calendar", "addtask", args2);
+            client1.start();
+            return s;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            taskID = s;
+        }
+
+        public String getTaskID(){ return taskID;}
+    }
+
+    public class addTasktoUserCalendarTask extends AsyncTask<Void, Void, Void>{
+        String[] args;
+
+        public addTasktoUserCalendarTask(String calendarID, String TaskID){
+            args = new String[2];
+            args[0] = calendarID;
+            args[1] = TaskID;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            Client client1 = new Client("calendar", "addtask", args);
+            client1.start();
+            return (Void) null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+        }
+    }
+
+    public void addTaskMethod(String name, String email, Date date){
+        newTask task1 = new newTask(name, date);
+        task1.execute();
+        getUserbyEmailTask task2 = new getUserbyEmailTask(email);
+        task2.execute();
+        try {
+            task1.get();
+            task2.get();
+        }
+        catch (InterruptedException e){
+            e.printStackTrace();
+        }
+        catch (ExecutionException e){
+            e.printStackTrace();
+        }
+        User user = task2.getUser();
+        String s = user.getCalendar();
+
+        new addTasktoUserCalendarTask(s, task1.getTaskID()).execute();
     }
 
     public void onListFragmentInteraction(User item){}

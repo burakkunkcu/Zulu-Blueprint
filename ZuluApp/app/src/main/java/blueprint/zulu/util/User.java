@@ -68,6 +68,8 @@ public class User implements Serializable
 		return permissions.contains( perm);
 	}
 
+	// Method to return user's calendar ID
+	public String getCalendar() { return calendar;}
 
 
 	

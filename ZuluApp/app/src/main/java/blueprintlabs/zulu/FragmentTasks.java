@@ -29,7 +29,7 @@ public class FragmentTasks extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    List<Task> data;
+    List<Task> data = new ArrayList<Task>();
     TaskAdapter adapter;
 
     Button bttnAdd;
@@ -71,9 +71,9 @@ public class FragmentTasks extends Fragment {
         ActivityProjectView parent = (ActivityProjectView) getActivity();
         String calendarID = parent.globalProject.getCalendar();
 
-        updateTasks(calendarID);
-
         adapter = new TaskAdapter(data, mListener, FragmentTasks.this);
+
+        updateTasks(calendarID);
 
         // Set the adapter
         if (view instanceof RecyclerView) {

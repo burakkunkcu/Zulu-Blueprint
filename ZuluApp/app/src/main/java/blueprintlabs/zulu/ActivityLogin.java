@@ -358,6 +358,7 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
         private final String mEmail;
         private final String mPassword;
         String[] aaa = new String[2];
+        private final String[] bbb = new String[1];
 
         UserLoginTask(String email, String password, Context context) {
             mEmail = email;
@@ -365,6 +366,7 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
             this.context = context;
             aaa[0] = mEmail;
             aaa[1] = mPassword;
+            bbb[0] = mEmail;
         }
 
         @Override
@@ -372,15 +374,14 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
             // TODO: attempt authentication against a network service.
 
 
-            Client client = new Client("login", "salt", aaa);
+            Client client = new Client("login", "salt", bbb);
             client.start();
-            byte[] salt = (byte[]) client.getResult();
+            String salt = (String) client.getResult();
             System.out.println("----------------salt---------------");
-            System.out.println(salt);
+            System.out.println(new String(salt));
             System.out.println("------------------------------------");
             if (salt != null){
-                char[] pw = mPassword.toCharArray();
-                byte[] hash = Auth.hash(pw, salt);
+                String hash = Auth.hash(mPassword, salt);
                 String s = new String(hash);
                 aaa[1] = s;
                 String tempHash = new String(hash);

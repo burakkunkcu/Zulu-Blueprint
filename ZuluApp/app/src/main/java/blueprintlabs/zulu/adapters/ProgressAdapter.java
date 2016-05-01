@@ -74,12 +74,14 @@ public class ProgressAdapter extends RecyclerView.Adapter<ProgressAdapter.ViewHo
 
         else if(getItemViewType(position) == TYPE_USERPROG){
             int userProgress = 0;
-            int i = 0;
-            for (Task t : userTasks){
-                userProgress += t.getProgress();
-                i++;
+            if(userTasks.size() > 0) {
+                int i = 0;
+                for (Task t : userTasks) {
+                    userProgress += t.getProgress();
+                    i++;
+                }
+                userProgress = userProgress / i;
             }
-            userProgress = userProgress/i;
             holder.pb.setMax(100);
             holder.pb.setProgress(userProgress);
             holder.mIdView.setText("Your Progress");
@@ -87,12 +89,14 @@ public class ProgressAdapter extends RecyclerView.Adapter<ProgressAdapter.ViewHo
         }
         else{
             int totalProgress = 0;
-            int i = 0;
-            for (Task t : mValues){
-                totalProgress += t.getProgress();
-                i++;
+            if(mValues.size() > 0) {
+                int i = 0;
+                for (Task t : mValues) {
+                    totalProgress += t.getProgress();
+                    i++;
+                }
+                totalProgress = totalProgress/i;
             }
-            totalProgress = totalProgress/i;
             holder.pb.setMax(100);
             holder.pb.setProgress(totalProgress);
             holder.percentView.setText("%" + totalProgress);

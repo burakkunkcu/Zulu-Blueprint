@@ -34,6 +34,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     public TaskAdapter(List<Task> items, FragmentTasks.OnListFragmentInteractionListener listener, FragmentTasks aa) {
         mValues = items;
+        mValues.add(new Task("", "", "", 0, true));
         mListener = listener;
         context = aa;
     }

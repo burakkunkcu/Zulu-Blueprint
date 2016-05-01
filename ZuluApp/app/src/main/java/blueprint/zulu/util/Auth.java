@@ -23,18 +23,20 @@ public class Auth {
     private Auth() { }
 
     //Returns a 16 byte salt
-    public static byte[] getNextSalt() {
+    public static String getNextSalt() {
         byte[] salt = new byte[16];
         RANDOM.nextBytes(salt);
-        return salt;
+        return new String(salt);
     }
 
     //Returns a byted & hashed salt by using SHA1
-    public static byte[] hash(char[] password, byte[] salt) {
+    public static String hash(String pw, String s) {
+        char[] password = pw.toCharArray();
+        byte[] salt = s.getBytes();
         PBEKeySpec spec = new PBEKeySpec(password, salt, ITERATIONS, KEY_LENGTH);
         try {
             SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            return skf.generateSecret(spec).getEncoded();
+            return new String(skf.generateSecret(spec).getEncoded());
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new AssertionError("Error while hashing a password: " + e.getMessage(), e);
         } finally {
@@ -43,12 +45,11 @@ public class Auth {
     }
 
     //Checks the password hash
-    public static boolean isExpectedPassword(byte[] clientHash, byte[] serverHash) {
+    public static boolean isExpectedPassword(String clientHash, String serverHash) {
 
-        if(Arrays.equals(clientHash , serverHash))
+        if(clientHash.equals( serverHash))
             return true;
         else
             return true;
     }
 }
-

@@ -38,17 +38,10 @@ public class Client extends Thread
             ObjectInputStream in = new ObjectInputStream(client.getInputStream());
 
             //Sends a new command
-            if(commandBase.equals("login")) {
-                if (commandIdentifier.equals("salt")) {
-                    out.writeObject(new RemoteCommand(commandBase, commandIdentifier, commandArgs));
-                    result = in.readObject();
-                } else if (commandIdentifier.equals("login")) {
-                    out.writeObject(new RemoteCommand(commandBase, commandIdentifier, commandArgs));
-                    result = in.readObject();
-                }
-            }
+            out.writeObject(new RemoteCommand(commandBase, commandIdentifier, commandArgs));
+            result = in.readObject();
 
-
+            client.close();
         }
         catch (Exception e)
         {

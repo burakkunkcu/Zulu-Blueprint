@@ -26,14 +26,15 @@ public class DialogAddProject extends DialogFragment {
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
 
-        View view = inflater.inflate(R.layout.dialog_signin, null);
+        View view = inflater.inflate(R.layout.dialog_newproject, null);
 
         TextView tw = (TextView) view.findViewById(R.id.header);
         tw.setText("New Project");
         final EditText name = (EditText) view.findViewById(R.id.username);
         final EditText desc = (EditText) view.findViewById(R.id.password);
-        EditText unused = (EditText) view.findViewById(R.id.date);
-        unused.setVisibility(View.GONE);
+
+        name.setHint("Project Name");
+        desc.setHint("Project Description");
         builder.setView(view)
                 // Add action buttons
                 .setPositiveButton(R.string.createTask, new DialogInterface.OnClickListener() {

@@ -30,8 +30,8 @@ public class FragmentProgress extends Fragment {
     private OnListFragmentInteractionListener mListener;
 
     ProgressAdapter adapter;
-    ArrayList<Task> userTasks;
-    ArrayList<Task> allTasks;
+    ArrayList<Task> userTasks = new ArrayList<Task>();
+    ArrayList<Task> allTasks = new ArrayList<Task>();
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -67,12 +67,14 @@ public class FragmentProgress extends Fragment {
         ActivityProjectView parent = (ActivityProjectView) getActivity();
 
         String projectCalendarID = parent.globalProject.getCalendar();
-        updateAllTasks(projectCalendarID);
 
-        String userCalendarID =
-        List<Task> user = parent.globalUser.getTasks(parent.globalProject);
+        String userCalendarID = parent.globalUser.getCalendar();
+        String ProjectID = parent.globalProject.getID();
 
         adapter = new ProgressAdapter(allTasks, userTasks, mListener);
+
+        updateAllTasks(projectCalendarID);
+        updateUserTasks(userCalendarID, ProjectID);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -133,11 +135,43 @@ public class FragmentProgress extends Fragment {
         }
     }
 
+    public class getTasksUserProject extends AsyncTask<Void, Void, ArrayList<Task>> {
+        private final String[] args;
+
+        public getTasksUserProject(String ID , String projectID){
+            args = new String[2];
+            args[0] = ID;
+            args[1] = projectID;
+        }
+
+        @Override
+        protected ArrayList<Task> doInBackground(Void... params) {
+            Client client = new Client("calendar", "gettasksofproject", args);
+            client.start();
+            ArrayList<Task> result = (ArrayList<Task>) client.getResult();
+            return  result;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Task> tasks) {
+            if(tasks != null){
+                userTasks = tasks;
+            }
+            else{
+                Toast.makeText(getActivity(), "Error retrieving tasks", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     private void updateAllTasks(String s){
         new getTasksbyCalendarID(s).execute();
         adapter.notifyDataSetChanged();
     }
 
+    private void updateUserTasks(String s, String projectID){
+        new getTasksUserProject(s, projectID).execute();
+        adapter.notifyDataSetChanged();
+    }
 
     /**
      * Interface for instantiating activites to implement to communicate with this fragment.

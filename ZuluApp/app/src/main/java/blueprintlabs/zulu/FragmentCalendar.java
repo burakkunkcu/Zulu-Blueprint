@@ -94,10 +94,12 @@ public class FragmentCalendar extends Fragment {
         newEventButton = (Button)view.findViewById(R.id.button_newevent);
         meetupButton = (Button) view.findViewById(R.id.button_meetup);
 
+        /**
         ActivityProjectView activity = (ActivityProjectView) getActivity();
         if(!activity.globalUser.hasPermission(User.MEETUP_PERMISSION)){
             meetupButton.setEnabled(false);
         }
+        **/
 
         newEventButton.setOnClickListener(new View.OnClickListener() {
             @Override

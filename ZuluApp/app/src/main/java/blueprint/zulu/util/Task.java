@@ -21,7 +21,7 @@ public class Task implements Serializable{
 	private boolean active;
 
 	// Constructor
-	private Task( String id, String description, String date, int progress, boolean active) 
+	public Task( String id, String description, String date, int progress, boolean active)
 	{
 		this.id = id;
 		this.description = description;

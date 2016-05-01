@@ -26,7 +26,7 @@ public class FragmentUsers extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    private ArrayList<User> projectsUsers;
+    private ArrayList<User> projectsUsers = new ArrayList<User>();
     UserAdapter adapter;
 
     /**
@@ -64,9 +64,9 @@ public class FragmentUsers extends Fragment {
 
         List<String> users_string = parent.globalProject.getUsers();
 
-        UpdateUsers(users_string);
-
         adapter = new UserAdapter(projectsUsers, mListener);
+
+        UpdateUsers(users_string);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
