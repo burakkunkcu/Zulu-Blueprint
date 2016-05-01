@@ -9,6 +9,7 @@ import android.support.v4.app.DialogFragment;
 
 /**
  * Created by Ahmet Burak on 22.4.2016.
+ * Add task pop-up
  */
 public class DialogAddTask extends DialogFragment {
     @Override

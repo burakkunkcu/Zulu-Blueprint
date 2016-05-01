@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Ahmet Burak on 27.4.2016.
+ * New calendar event pop-up dialog.
  */
 public class DialogNewEvent extends DialogFragment {
 

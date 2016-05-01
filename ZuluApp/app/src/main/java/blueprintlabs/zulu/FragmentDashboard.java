@@ -24,32 +24,33 @@ import blueprintlabs.zulu.resources.Message;
 import java.util.ArrayList;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ * Dashboard, most recent actions in the project are retrieved from the broadcast and shown here.
  */
 public class FragmentDashboard extends Fragment {
 
-    // TODO: Customize parameter argument names
+    //constants
     private static final String ARG_COLUMN_COUNT = "column-count";
     private static final int NOTIFY_ID = 1231233;
-    // TODO: Customize parameters
+
+
     private int mColumnCount = 1;
+
+
     private OnListFragmentInteractionListener mListener;
     private DashboardAdapter adapter;
     NotificationCompat.Builder mBuilder;
     StringBuilder notif = new StringBuilder();
+    ArrayList<Action> items;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
+     * Not yet implemented
      */
     public FragmentDashboard() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
+    //Constructor
     public static FragmentDashboard newInstance(int columnCount) {
         FragmentDashboard fragment = new FragmentDashboard();
         Bundle args = new Bundle();
@@ -72,13 +73,7 @@ public class FragmentDashboard extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dashboard_list_row_layout, container, false);
 
-        ArrayList<Action> aa = new ArrayList<Action>();
-        aa.add(new Action("aa", "bb", "cc"));
-        aa.add(new Action("aa", "bb", "cc"));
-        aa.add(new Action("aa", "bb", "cc"));
-        aa.add(new Action("aa", "bb", "cc"));
-        aa.add(new Action("aa", "bb", "cc"));
-        aa.add(new Action("aa", "bb", "cc"));
+        ArrayList<Action> items = new ArrayList<Action>();
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -89,7 +84,7 @@ public class FragmentDashboard extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            adapter = new DashboardAdapter(aa, mListener);
+            adapter = new DashboardAdapter(items, mListener);
             recyclerView.setAdapter(adapter);
         }
         return view;
@@ -139,14 +134,8 @@ public class FragmentDashboard extends Fragment {
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Interface for instantiating activites to implement to communicate with this fragment.
+     * Currently method callbacks are directly used by the fragment instead of this listener.
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name

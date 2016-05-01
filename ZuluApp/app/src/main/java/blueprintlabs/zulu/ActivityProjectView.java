@@ -46,6 +46,9 @@ import blueprintlabs.zulu.resources.Task;
 import blueprintlabs.zulu.resources.User;
 import blueprintlabs.zulu.socket.Client;
 
+/**
+ * This activity handles the operations running on the Project.
+ */
 public class ActivityProjectView extends AppCompatActivity implements FragmentTasks.OnListFragmentInteractionListener,
                                                                 FragmentDashboard.OnListFragmentInteractionListener,
                                                                     FragmentProgress.OnListFragmentInteractionListener,
@@ -74,7 +77,7 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
     private ViewPager mViewPager;
 
     /**
-     *The {@Link Project} that will be represented
+     *The {@Link Project} that will be represented, combined with {@Link User} that is the current user and {@Link meetupData} to carry the meetUp task between activity and CalendarFragment
      */
     public Project globalProject;
     public User globalUser;
@@ -86,6 +89,7 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
     private boolean mBound = false;
     private ServiceChat mService;
 
+    //Receives the service broadcasts from {@Link ServiceChat} and {@Link ServiceNotification} and carries passes them to their respective fragments
     private BroadcastReceiver messageReceiver = new BroadcastReceiver(){
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -139,7 +143,7 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //TODO INITIATE THE PROJECT HERE
+        //Inıtiate the globalProject and globalUser here
         Intent intent = getIntent();
         String projectID = intent.getStringExtra("projectID");
         if(globalProject == null){
@@ -150,20 +154,20 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
             new getUserTask(intent.getStringExtra("email")).execute();
         }
 
+        //Intent filter to filter broadcasts we receive
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(SERVICE_MESSAGE);
         intentFilter.addAction(SERVICE_OUTGOING_MESSAGE);
         registerReceiver(messageReceiver, intentFilter);
 
-        //TODO USE THIS PROJECT NUMBER TO ACCESS THE SERVER AND POPULATE THE INFORMATION OF PROJECT
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
+
+        // Create the adapter that will return a fragment for each of the six
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        //getActionBar().setTitle(project.getName());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -171,17 +175,6 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-
-        /**
-         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-         fab.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-        .setAction("Action", null).show();
-        }
-        });
-         **/
 
     }
 
@@ -209,6 +202,8 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
         return true;
     }
 
+
+    //Handles the button clicks on the toolbar, refresh and settings
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -237,7 +232,8 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
     }
 
     /**
-     * A placeholder fragment containing a simple view.
+     * A placeholder fragment containing a simple view, to default.
+     * Shows "Work in progress"
      */
     public static class PlaceholderFragment extends Fragment {
         /**
@@ -271,7 +267,6 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
             return rootView;
         }
     }
-
 
 
     /**
@@ -344,6 +339,7 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
         }
     }
 
+    //attach/detach all fragments to force redrawing of all fragments
     private void refresh(){
         for(int i = 0; i <= 5; i++){
             Fragment fragment = mSectionsPagerAdapter.getRegisteredFragment(i);
@@ -352,7 +348,7 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
         }
     }
 
-
+    //Method for {@Link FragmentChat} to use to send messages using the {@Link ServiceChat}
     public void sendMessageBroadcast(String sender, String message){
         Intent intent = new Intent();
         intent.setAction(SERVICE_OUTGOING_MESSAGE);
@@ -361,6 +357,9 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
         sendBroadcast(intent);
     }
 
+    /**
+     * AsyncTask to get the {@Link Project} object from the server using its ID.
+     */
     public class getProjectbyID extends AsyncTask<Void, Void, Project>{
         private final String ID;
         private final String[] args;
@@ -387,6 +386,9 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
         }
     }
 
+    /**
+     * AsyncTask to get task tied to a user.
+     */
     public class getUserTask extends AsyncTask<Void, Void, User> {
         private final String mEmail;
         private final String[] args;
@@ -413,6 +415,9 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
         }
     }
 
+    /**
+     * AsyncTask to find MeetUps, for {@Link FragmentCalendar} to use
+     */
     public class MeetupTask extends AsyncTask<Void, Void, ArrayList<Date>>{
         final String[] args;
 
@@ -441,11 +446,15 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
 
     }
 
+    // Method to call previous task in , to be used by {@Link FragmentCalendar}
     public ArrayList<Date> getMeetupDates(){
         new MeetupTask().execute();
         return meetupDates;
     }
 
+    /**
+     * AsyncTask to Create new task.
+     */
     public class newTask extends AsyncTask<Void, Void, Boolean>{
         final String[] args;
         final Date dateStart;
@@ -488,6 +497,4 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
     public void onFragmentInteraction(User user){}
     public void onFragmentInteraction(Uri uri){}
 
-
-    public void updateData(){}
 }

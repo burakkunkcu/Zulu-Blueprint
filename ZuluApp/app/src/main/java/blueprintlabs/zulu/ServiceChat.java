@@ -19,14 +19,15 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 
 /**
+ * This service runs in the background and listens to incoming messages from the chat server, and broadcasts received messages in the app
  * Created by Ahmet Burak on 29.4.2016.
  */
 public class ServiceChat extends Service {
     private static final String SERVICE_MESSAGE = "message";
     private static final String SERVICE_OUTGOING_MESSAGE = "message";
     private static final String UPDATE_MESSAGE = "update";
-    private final String HOST = "";
-    private final int PORT = 111;
+    private final String HOST = "46.101.150.199";
+    private final int PORT = 2150;
 
     Socket socket;
     BufferedReader in;
@@ -48,7 +49,16 @@ public class ServiceChat extends Service {
         serviceReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                //TODO SEND MESSAGE USING THE SOCKET
+                try {
+                    out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                    String m = intent.getStringExtra("message");
+                    String s = intent.getStringExtra("sender");
+                    out.write("m");
+                    out.write("s");
+                }
+                catch(IOException e){
+                    e.printStackTrace();
+                }
             }
         };
 
@@ -69,7 +79,7 @@ public class ServiceChat extends Service {
                     String s = null;
                     try {
                         while ((s = in.readLine()) != null) {
-                            //TODO PROCESS THE MESSAGE USING THE BROADCASTER
+                            //Not yet implemented
                         }
                     }
                     catch(IOException e){
@@ -82,7 +92,7 @@ public class ServiceChat extends Service {
             outputThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    //TODO FEED THE OUTPUTSTREAM
+                    //Not yet implemented
                 }
             });
             inputThread.start();

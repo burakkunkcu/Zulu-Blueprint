@@ -19,28 +19,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A fragment representing a list of Items.
- * <p>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ * Fragment that shows the current users and their rankings in that project.
  */
 public class FragmentUsers extends Fragment {
-
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
+     * Not yet implemented
      */
     public FragmentUsers() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
+    //Initialize the fragment with number of columns
     public static FragmentUsers newInstance(int columnCount) {
         FragmentUsers fragment = new FragmentUsers();
         Bundle args = new Bundle();

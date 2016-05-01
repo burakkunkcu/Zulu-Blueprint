@@ -66,9 +66,9 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
     /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     * This was auto-generated to implement the App Indexing API.
      */
     private GoogleApiClient client;
 
@@ -152,6 +152,7 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
     }
 
     /**
+     * AUTOCOMPLETE
      * Callback received when a permissions request has been completed.
      */
     @Override
@@ -261,6 +262,7 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
+    //Load the contacts from your contacts
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return new CursorLoader(this,
@@ -278,6 +280,7 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
                 ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
     }
 
+    //Finished to the previous method
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         List<String> emails = new ArrayList<>();
@@ -290,9 +293,9 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
         addEmailsToAutoComplete(emails);
     }
 
+    //To reset the contacts loader
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
     }
 
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
@@ -304,21 +307,16 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
+    // These were auto generated to implement the App Indexing API.
+    // See https://g.co/AppIndexing/AndroidStudio for more information.
     @Override
     public void onStart() {
         super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
         Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "ActivityLogin Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
+                Action.TYPE_VIEW,
+                "ActivityLogin Page",
                 Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
                 Uri.parse("android-app://blueprintlabs.zulu/http/host/path")
         );
         AppIndex.AppIndexApi.start(client, viewAction);
@@ -328,16 +326,11 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
     public void onStop() {
         super.onStop();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
+
         Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "ActivityLogin Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
+                Action.TYPE_VIEW,
+                "Login Page",
                 Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
                 Uri.parse("android-app://blueprintlabs.zulu/http/host/path")
         );
         AppIndex.AppIndexApi.end(client, viewAction);
@@ -345,6 +338,7 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
     }
 
 
+    //Query to retrieve autofill data from contacts
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,

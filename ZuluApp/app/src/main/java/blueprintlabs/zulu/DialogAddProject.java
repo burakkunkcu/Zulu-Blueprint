@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 /**
  * Created by Ahmet Burak on 22.4.2016.
+ * Add project dialog pop-up
  */
 public class DialogAddProject extends DialogFragment {
     @Override

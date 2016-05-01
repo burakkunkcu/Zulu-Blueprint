@@ -19,10 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ * Fragment that shows the current tasks.
  */
 public class FragmentTasks extends Fragment {
 
@@ -37,6 +34,7 @@ public class FragmentTasks extends Fragment {
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
+     * Not yet implemented
      */
     public FragmentTasks() {
     }
@@ -111,14 +109,8 @@ public class FragmentTasks extends Fragment {
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Interface for instantiating activites to implement to communicate with this fragment.
+     * Currently method callbacks are directly used by the fragment instead of this listener.
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name

@@ -25,22 +25,16 @@ import blueprintlabs.zulu.socket.Client;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FragmentCalendar.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link FragmentCalendar#newInstance} factory method to
- * create an instance of this fragment.
+ *Fragment to handle the calendar functions. Instantiated by the {@Link ActivityProjectView}
  */
 public class FragmentCalendar extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    //Properties
     CalendarView cv;
     Button newEventButton;
     Button meetupButton;
@@ -53,14 +47,8 @@ public class FragmentCalendar extends Fragment {
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentCalendar.
+    * Stub method to create new instance using parameters.
      */
-    // TODO: Rename and change types and number of parameters
     public static FragmentCalendar newInstance(String param1, String param2) {
         FragmentCalendar fragment = new FragmentCalendar();
         Bundle args = new Bundle();
@@ -77,21 +65,6 @@ public class FragmentCalendar extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
-        // assign event handler
-        /**
-        cv.setEventHandler(new CalendarView.EventHandler()
-        {
-            @Override
-            public void onDayLongPress(Date date)
-            {
-                // show returned day
-                DateFormat df = SimpleDateFormat.getDateInstance();
-                //Toast.makeText(ActivityProjectView.this, df.format(date), Toast.LENGTH_SHORT).show();
-            }
-        });
-         **/
     }
 
     @Override
@@ -102,6 +75,8 @@ public class FragmentCalendar extends Fragment {
 
         cv = (CalendarView) view.findViewById(R.id.calendar_view);
 
+
+        //Dummy variables
         HashSet<Date> aa = new HashSet<Date>();
         aa.add(new Date());
         aa.add(new Date(116, 3, 11));
@@ -180,12 +155,6 @@ public class FragmentCalendar extends Fragment {
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(User user) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(user);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -204,6 +173,7 @@ public class FragmentCalendar extends Fragment {
         mListener = null;
     }
 
+    //Call a date to arrange a meetup at that date
     public class MeetupTask extends AsyncTask<Void, Void, ArrayList<Date>>{
         final String[] args;
 
@@ -234,18 +204,12 @@ public class FragmentCalendar extends Fragment {
     public ArrayList<Date> getMeetupList(){
         return meetupList;
     }
+
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Interface for instantiating activites to implement to communicate with this fragment.
+     * Currently method callbacks are directly used by the fragment instead of this listener.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(User user);
     }
 }

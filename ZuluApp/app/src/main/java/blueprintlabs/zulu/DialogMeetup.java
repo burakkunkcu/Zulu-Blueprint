@@ -19,6 +19,7 @@ import blueprintlabs.zulu.resources.Task;
 
 /**
  * Created by Ahmet Burak on 27.4.2016.
+ * Meetup function pop-up dialog.
  */
 public class DialogMeetup extends DialogFragment{
 

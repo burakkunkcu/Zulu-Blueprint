@@ -47,7 +47,7 @@
                 android:value="blueprintlabs.zulu.ActivityProjectView" />
         </activity>
 
-        <service android:name=".ServiceChat" />
+        <service android:name=".ServiceNotification" />
         <service android:name=".ServiceNotification" />
 
         <activity

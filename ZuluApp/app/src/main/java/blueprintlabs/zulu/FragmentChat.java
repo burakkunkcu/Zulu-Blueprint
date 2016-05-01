@@ -42,7 +42,6 @@ public class FragmentChat extends Fragment {
     private ChatAdapter adapter;
 
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -52,15 +51,7 @@ public class FragmentChat extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentChat.
-     */
-    // TODO: Rename and change types and number of parameters
+    //Stub constructor to create FragmentList using params
     public static FragmentChat newInstance(String param1, String param2) {
         FragmentChat fragment = new FragmentChat();
         Bundle args = new Bundle();
@@ -125,12 +116,6 @@ public class FragmentChat extends Fragment {
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -149,6 +134,9 @@ public class FragmentChat extends Fragment {
         mListener = null;
     }
 
+    /**
+     * These 3 methods update the view with incoming message.
+     */
     boolean sendChatMessage() {
         adapter.add(new Message(input.getText().toString(), "NAME OF THE CURRENT USER HERE"));
         input.setText("");
@@ -165,6 +153,9 @@ public class FragmentChat extends Fragment {
         return true;
     }
 
+    /**
+     * AsyncTask to initiate chat with last 20 messages previously loaded.
+     */
     public class getInitialMessages extends AsyncTask<Void, Void, ArrayList<Message>>{
         private final Project project;
         private final String[] args;
@@ -192,14 +183,8 @@ public class FragmentChat extends Fragment {
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Interface for instantiating activites to implement to communicate with this fragment.
+     * Currently method callbacks are directly used by the fragment instead of this listener.
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name

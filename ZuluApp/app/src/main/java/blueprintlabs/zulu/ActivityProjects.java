@@ -57,7 +57,6 @@ public class ActivityProjects extends AppCompatActivity implements ProjectsAdapt
         adapter = new ProjectsAdapter(projectsList, ActivityProjects.this);
         mRecyclerView.setAdapter(adapter);
 
-        //getActionBar().setTitle("PROJECTS");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -80,12 +79,12 @@ public class ActivityProjects extends AppCompatActivity implements ProjectsAdapt
 
         View view = inflater.inflate(R.layout.activity_projects, container, false);
 
-
-
         return view;
     }
-    //GET DATA FROM SERVER
 
+    /**
+     * Retrieves the user and populates the {@Link  projectsList} with users projects using  {@Link getByProjectID}.
+     */
     public class getUserTask extends AsyncTask<Void, Void, User> {
         private final String mEmail;
         private final String[] args;
@@ -121,6 +120,9 @@ public class ActivityProjects extends AppCompatActivity implements ProjectsAdapt
         }
     }
 
+    /**
+     * Create a new project with user's leadership.
+     */
     public class addProject extends AsyncTask<Void, Void, Boolean>{
         private final String mName;
         private final String mDesc;
@@ -153,6 +155,10 @@ public class ActivityProjects extends AppCompatActivity implements ProjectsAdapt
         }
     }
 
+
+    /**
+     * AsyncTask to retrieve a project with its ID.
+     */
     public class getProjectById extends AsyncTask<Void, Void, Project>{
         private final String[] args;
 
@@ -178,10 +184,12 @@ public class ActivityProjects extends AppCompatActivity implements ProjectsAdapt
         }
     }
 
+    //Method to execute {@Link getProjectById} from outside the class
     public void addProject(String name, String desc){
         new addProject(name, desc).execute();
     }
 
+    //Action that is done on action with list items.
     @Override
     public void onListFragmentInteraction(int position) {
         Intent intent = new Intent(this, ActivityProjectView.class);

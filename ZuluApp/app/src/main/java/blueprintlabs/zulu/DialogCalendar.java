@@ -18,6 +18,7 @@ import blueprintlabs.zulu.resources.Task;
 
 /**
  * Created by Ahmet Burak on 26.4.2016.
+ * Calendar popup that shows events in a day
  */
 public class DialogCalendar extends DialogFragment{
 
