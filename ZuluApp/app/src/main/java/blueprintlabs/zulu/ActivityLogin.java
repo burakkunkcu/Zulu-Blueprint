@@ -381,9 +381,8 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
 
             Client client = new Client("login", "salt", aaa);
             client.start();
-            client.run();
             byte[] salt = (byte[]) client.getResult();
-            System.out.println("------------------------------------");
+            System.out.println("----------------salt---------------");
             System.out.println(salt);
             System.out.println("------------------------------------");
             if (salt != null){
@@ -396,9 +395,9 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
                 client2.start();
                 client2.run();
                 boolean aaaa = (boolean)client2.getResult();
-                System.out.println("------------------------------------");
+                System.out.println("------------boolean getresult------------------");
                 System.out.println(aaaa);
-                System.out.println("------------------------------------");
+                System.out.println("-------------------------");
                 return aaaa;
             }
             else{

@@ -27,7 +27,8 @@
             android:text="NEW EVENT"
             android:id="@+id/button_newevent"
             android:layout_gravity="right"
-            android:layout_weight="0.5"/>
+            android:layout_weight="0.5"
+            android:background="?android:attr/selectableItemBackground"/>
 
         <Button
             style="?android:attr/buttonStyleSmall"
@@ -35,7 +36,8 @@
             android:layout_height="wrap_content"
             android:text="MEETUP"
             android:id="@+id/button_meetup"
-            android:layout_weight="0.5"/>
+            android:layout_weight="0.5"
+            android:background="?android:attr/selectableItemBackground"/>
 
     </LinearLayout>
 

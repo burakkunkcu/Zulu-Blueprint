@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import blueprintlabs.zulu.resources.Project;
+import blueprintlabs.zulu.socket.Client;
 
 public class ActivityRegister extends AppCompatActivity {
     EditText regMail;
@@ -35,7 +37,7 @@ public class ActivityRegister extends AppCompatActivity {
         regName = (EditText) findViewById(R.id.regName);
         regButton = (Button) findViewById(R.id.regbutton);
 
-        getActionBar().setTitle("REGISTER");
+        //getActionBar().setTitle("REGISTER");
 
         regButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +87,6 @@ public class ActivityRegister extends AppCompatActivity {
         } else {
             // Show a toast, and return to login screen
             new RegisterTask(email, password, name, this).execute((Void) null);
-            Toast.makeText(this, "Register successful", Toast.LENGTH_SHORT);
         }
 
     }
@@ -104,32 +105,32 @@ public class ActivityRegister extends AppCompatActivity {
         private final String mEmail;
         private final String mPassword;
         private final String mName;
+        private final String[] args;
 
         RegisterTask(String email, String password, String name, Context context) {
             mEmail = email;
             mPassword = password;
             mName = name;
             this.context = context;
+            args = new String[3];
+            args[0] = mEmail;
+            args[1] = mName;
+            args[2] = mPassword;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-                //TODO REGISTER HERE
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            return true;
+            Client client = new Client("register", "", args);
+            client.start();
+            System.out.println(client.getResult());
+            boolean aa = (boolean) client.getResult();
+            return aa;
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
             if (success) {
+                Toast.makeText(ActivityRegister.this, "Register successful", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context ,ActivityLogin.class);
                 intent.putExtra("fromreg", true);
                 intent.putExtra("mail", mEmail);

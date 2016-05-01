@@ -110,8 +110,13 @@ public class User {
         return result;
     }
 
-    public ArrayList<Project> getProjects(){
-        return projects;
+
+    public ArrayList<String> getProjects(){
+        ArrayList<String> aaa = new ArrayList<String>();
+        for (Project p : projects){
+            aaa.add(p.getID());
+        }
+        return aaa;
     }
 
     public static User getByID( int id)

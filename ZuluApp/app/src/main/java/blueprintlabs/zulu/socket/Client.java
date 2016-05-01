@@ -47,18 +47,8 @@ public class Client extends Thread
                     result = in.readObject();
                 }
             }
-            /*
-            else if(commandBase.equals("users"))
-            {
-                if (commandIdentifier.equals("salt")) {
-                    out.writeObject(new RemoteCommand(commandBase, commandIdentifier, commandArgs));
-                    result = in.readObject();
-                } else if (commandIdentifier.equals("login")) {
-                    out.writeObject(new RemoteCommand(commandBase, commandIdentifier, commandArgs));
-                    result = in.readObject();
-                }
-            }
-            */
+
+
         }
         catch (Exception e)
         {
@@ -68,6 +58,7 @@ public class Client extends Thread
 
     public Object getResult()
     {
+        while(this.isAlive()) {}
         return result;
     }
 
@@ -80,7 +71,5 @@ public class Client extends Thread
             e.printStackTrace();
         }
     }
-
-
 
 }

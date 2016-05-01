@@ -44,8 +44,10 @@ public class ActivityProjects extends AppCompatActivity implements ProjectsAdapt
             new getUserTask(userMail).execute();
         }
 
+        projectsList = new ArrayList<Project>();
+
         if(currentUser != null){
-            projectsList = currentUser.getProjects();
+
         }
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -98,8 +100,10 @@ public class ActivityProjects extends AppCompatActivity implements ProjectsAdapt
         protected User doInBackground(Void... params) {
             Client client = new Client("user", "get", args);
             client.start();
-            client.run();
-            User user = (User) client.getResult();
+            User user = (User) client.getResult(); //returns null
+            System.out.println("------------user-------------");
+            System.out.println(client.getResult());
+            System.out.println("--------------user-----------");
             return user;
         }
 
@@ -107,6 +111,12 @@ public class ActivityProjects extends AppCompatActivity implements ProjectsAdapt
         protected void onPostExecute(User user) {
             if (user != null){
                 currentUser = user;
+                for(String s : currentUser.getProjects()){
+                    new getProjectById(s).execute();
+                }
+            }
+            else{
+                Toast.makeText(ActivityProjects.this, "Problem in server, please contact developer", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -131,7 +141,6 @@ public class ActivityProjects extends AppCompatActivity implements ProjectsAdapt
         protected Boolean doInBackground(Void... params) {
             Client client = new Client("project", "create", args);
             client.start();
-            client.run();
             return (boolean)client.getResult();
         }
 
@@ -139,6 +148,32 @@ public class ActivityProjects extends AppCompatActivity implements ProjectsAdapt
         protected void onPostExecute(Boolean result) {
             if(result){
                 Toast.makeText(ActivityProjects.this, "Project successfully added", Toast.LENGTH_SHORT).show();
+                new getUserTask(userMail).execute();
+            }
+        }
+    }
+
+    public class getProjectById extends AsyncTask<Void, Void, Project>{
+        private final String[] args;
+
+        public getProjectById(String ID){
+            args = new String[1];
+            args[0] = ID;
+        }
+
+        @Override
+        protected Project doInBackground(Void... params) {
+            Client client = new Client("project", "get", args);
+            client.start();
+            Project p = (Project) client.getResult();
+            return p;
+        }
+
+        @Override
+        protected void onPostExecute(Project project) {
+            if(project != null) {
+                projectsList.add(project);
+                ActivityProjects.this.adapter.notifyDataSetChanged();
             }
         }
     }

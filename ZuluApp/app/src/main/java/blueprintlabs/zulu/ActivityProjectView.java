@@ -375,7 +375,6 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
         protected Project doInBackground(Void... params) {
             Client client = new Client("project", "get", args);
             client.start();
-            client.run();
             Project project = (Project) client.getResult();
             return project;
         }
@@ -402,7 +401,6 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
         protected User doInBackground(Void... params) {
             Client client = new Client("user", "get", args);
             client.start();
-            client.run();
             User user = (User) client.getResult();
             return user;
         }
@@ -430,7 +428,6 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
         protected ArrayList<Date> doInBackground(Void... params) {
             Client client = new Client("calendar", "meetup", args);
             client.start();
-            client.run();
 
             return (ArrayList<Date>) client.getResult();
         }
@@ -472,7 +469,6 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
                 args[1] = jsonInString;
                 Client client = new Client("task", "create", args);
                 client.start();
-                client.run();
                 bool = bool && (boolean) client.getResult();
             }
             return bool;
