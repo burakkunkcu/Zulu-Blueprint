@@ -8,10 +8,10 @@ import android.widget.TextView;
 
 import blueprintlabs.zulu.FragmentDashboard.OnListFragmentInteractionListener;
 import blueprintlabs.zulu.R;
-import blueprintlabs.zulu.resources.Action;
-import blueprintlabs.zulu.resources.Message;
+import blueprint.zulu.util.Action;
 
 import java.util.List;
+import blueprint.zulu.util.*;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Action} and makes a call to the

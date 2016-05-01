@@ -39,9 +39,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import java.util.ArrayList;
 import java.util.List;
 
-import blueprintlabs.zulu.resources.Auth;
+import blueprint.zulu.util.*;
 import blueprintlabs.zulu.socket.Client;
-import blueprintlabs.zulu.resources.Project;
 
 import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.SYSTEM_ALERT_WINDOW;

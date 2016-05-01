@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import blueprintlabs.zulu.resources.Task;
+import blueprint.zulu.util.*;
 
 /**
  * Created by Ahmet Burak on 27.4.2016.

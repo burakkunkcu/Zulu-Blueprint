@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import blueprintlabs.zulu.resources.Task;
+import blueprint.zulu.util.*;
 
 /**
  * Created by Ahmet Burak on 26.4.2016.

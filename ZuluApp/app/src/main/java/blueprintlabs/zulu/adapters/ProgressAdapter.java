@@ -10,7 +10,7 @@ import android.support.v7.widget.CardView;
 
 import blueprintlabs.zulu.FragmentProgress.OnListFragmentInteractionListener;
 import blueprintlabs.zulu.R;
-import blueprintlabs.zulu.resources.Task;
+import blueprint.zulu.util.*;
 
 import java.util.List;
 

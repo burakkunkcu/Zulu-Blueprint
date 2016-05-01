@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import blueprintlabs.zulu.R;
-import blueprintlabs.zulu.resources.Message;
+import blueprint.zulu.util.*;
 
 /**
  * Created by Ahmet Burak on 28.4.2016.
@@ -47,9 +47,9 @@ public class ChatAdapter extends ArrayAdapter<Message> {
         view = inflater.inflate(R.layout.chat_left, parent, false);
 
         message = (TextView) view.findViewById(R.id.message);
-        message.setText(chatMessageObj.message);
+        message.setText(chatMessageObj.getSenderID());
         sender = (TextView) view.findViewById(R.id.sender);
-        sender.setText(chatMessageObj.sender);
+        sender.setText(chatMessageObj.getMessageBody());
         return view;
     }
 }

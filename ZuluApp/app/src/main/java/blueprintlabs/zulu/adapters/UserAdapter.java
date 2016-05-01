@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import blueprintlabs.zulu.FragmentUsers.OnListFragmentInteractionListener;
 import blueprintlabs.zulu.R;
-import blueprintlabs.zulu.resources.User;
+import blueprint.zulu.util.*;
 
 //import blueprintlabs.zulu.ItemFragment.OnListFragmentInteractionListener;
 
@@ -38,8 +38,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).name);
-        holder.mContentView.setText(mValues.get(position).desc);
+        holder.mIdView.setText(mValues.get(position).getName());
+        holder.mContentView.setText(mValues.get(position).getDesc());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

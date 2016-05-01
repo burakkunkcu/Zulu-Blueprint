@@ -1,4 +1,4 @@
-package blueprintlabs.zulu.resources;
+package blueprint.zulu.util;
 
 /**
  * Created by Ahmet Burak on 23.4.2016.

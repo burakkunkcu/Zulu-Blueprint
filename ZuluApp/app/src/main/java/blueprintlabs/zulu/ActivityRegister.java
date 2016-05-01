@@ -16,7 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import blueprintlabs.zulu.resources.Project;
+import blueprint.zulu.util.*;
 import blueprintlabs.zulu.socket.Client;
 
 public class ActivityRegister extends AppCompatActivity {

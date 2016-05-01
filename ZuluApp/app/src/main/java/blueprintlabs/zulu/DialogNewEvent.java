@@ -14,6 +14,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import blueprint.zulu.util.*;
 
 /**
  * Created by Ahmet Burak on 27.4.2016.

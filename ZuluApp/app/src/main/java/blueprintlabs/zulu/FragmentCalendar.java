@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 
-import blueprintlabs.zulu.resources.CalendarView;
-import blueprintlabs.zulu.resources.User;
+import blueprint.zulu.util.CalendarView;
+import blueprint.zulu.util.*;
 import blueprintlabs.zulu.socket.Client;
 
 
@@ -95,8 +95,7 @@ public class FragmentCalendar extends Fragment {
         meetupButton = (Button) view.findViewById(R.id.button_meetup);
 
         ActivityProjectView activity = (ActivityProjectView) getActivity();
-        ArrayList<String> permissions = activity.globalUser.getPermissions();
-        if(permissions.indexOf(User.MEETUP_PERMISSION) < 0){
+        if(!activity.globalUser.hasPermission(User.MEETUP_PERMISSION)){
             meetupButton.setEnabled(false);
         }
 

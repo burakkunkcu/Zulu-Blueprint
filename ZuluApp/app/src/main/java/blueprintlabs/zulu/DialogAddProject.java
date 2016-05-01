@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import blueprint.zulu.util.*;
+
 /**
  * Created by Ahmet Burak on 22.4.2016.
  * Add project dialog pop-up

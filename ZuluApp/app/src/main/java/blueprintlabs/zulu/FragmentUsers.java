@@ -1,6 +1,7 @@
 package blueprintlabs.zulu;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,8 +13,8 @@ import android.view.ViewGroup;
 
 
 import blueprintlabs.zulu.adapters.UserAdapter;
-import blueprintlabs.zulu.resources.Task;
-import blueprintlabs.zulu.resources.User;
+import blueprint.zulu.util.*;
+import blueprintlabs.zulu.socket.Client;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,8 @@ public class FragmentUsers extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private ArrayList<User> projectsUsers;
+    UserAdapter adapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -59,8 +62,11 @@ public class FragmentUsers extends Fragment {
 
         ActivityProjectView parent = (ActivityProjectView) getActivity();
 
-        List<User> users = parent.globalProject.getUsers();
+        List<String> users_string = parent.globalProject.getUsers();
 
+        UpdateUsers(users_string);
+
+        adapter = new UserAdapter(projectsUsers, mListener);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -71,7 +77,7 @@ public class FragmentUsers extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new UserAdapter(users, mListener));
+            recyclerView.setAdapter(adapter);
         }
         return view;
     }
@@ -92,6 +98,44 @@ public class FragmentUsers extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    /**
+     * Use the getUserById to populate the projectUsers list
+     * @param users_string
+     */
+    private void UpdateUsers(List<String> users_string){
+        for(String s : users_string){
+            new getUserById(s).execute();
+        }
+    }
+
+    /**
+     * AsyncTask to retrieve a user with its id.
+     */
+    public class getUserById extends AsyncTask<Void, Void, User> {
+        private final String[] args;
+
+        public getUserById(String ID){
+            args = new String[1];
+            args[0] = ID;
+        }
+
+        @Override
+        protected User doInBackground(Void... params) {
+            Client client = new Client("user", "get", args);
+            client.start();
+            User u = (User) client.getResult();
+            return u;
+        }
+
+        @Override
+        protected void onPostExecute(User user) {
+            if(user != null) {
+                projectsUsers.add(user);
+                FragmentUsers.this.adapter.notifyDataSetChanged();
+            }
+        }
     }
 
     /**

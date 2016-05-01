@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.support.v4.app.DialogFragment;
+import blueprint.zulu.util.*;
 
 /**
  * Created by Ahmet Burak on 22.4.2016.

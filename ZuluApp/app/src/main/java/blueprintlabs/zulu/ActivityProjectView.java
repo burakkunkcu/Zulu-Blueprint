@@ -1,7 +1,5 @@
 package blueprintlabs.zulu;
 
-import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,9 +8,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -35,15 +31,11 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
-import java.sql.ClientInfoStatus;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import blueprintlabs.zulu.resources.Action;
-import blueprintlabs.zulu.resources.Project;
-import blueprintlabs.zulu.resources.Task;
-import blueprintlabs.zulu.resources.User;
+import blueprint.zulu.util.Action;
+import blueprint.zulu.util.*;
 import blueprintlabs.zulu.socket.Client;
 
 /**

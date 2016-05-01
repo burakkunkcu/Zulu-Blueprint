@@ -1,6 +1,7 @@
 package blueprintlabs.zulu;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -9,9 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import blueprintlabs.zulu.adapters.ProgressAdapter;
-import blueprintlabs.zulu.resources.Task;
+import blueprint.zulu.util.*;
+import blueprintlabs.zulu.socket.Client;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,10 @@ public class FragmentProgress extends Fragment {
 
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+
+    ProgressAdapter adapter;
+    ArrayList<Task> userTasks;
+    ArrayList<Task> allTasks;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -59,9 +66,13 @@ public class FragmentProgress extends Fragment {
 
         ActivityProjectView parent = (ActivityProjectView) getActivity();
 
-        List<Task> total = parent.globalProject.getTasks();
+        String projectCalendarID = parent.globalProject.getCalendar();
+        updateAllTasks(projectCalendarID);
 
-        List<Task> user = parent.globalUser.getTasks();
+        String userCalendarID =
+        List<Task> user = parent.globalUser.getTasks(parent.globalProject);
+
+        adapter = new ProgressAdapter(allTasks, userTasks, mListener);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -72,7 +83,7 @@ public class FragmentProgress extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new ProgressAdapter(total, user, mListener));
+            recyclerView.setAdapter(adapter);
         }
         return view;
     }
@@ -94,6 +105,39 @@ public class FragmentProgress extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
+    public class getTasksbyCalendarID extends AsyncTask<Void, Void, ArrayList<Task>> {
+        private final String[] args;
+
+        public getTasksbyCalendarID(String ID){
+            args = new String[1];
+            args[0] = ID;
+        }
+
+        @Override
+        protected ArrayList<Task> doInBackground(Void... params) {
+            Client client = new Client("calendar", "gettasks", args);
+            client.start();
+            ArrayList<Task> result = (ArrayList<Task>) client.getResult();
+            return  result;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Task> tasks) {
+            if(tasks != null){
+                allTasks = tasks;
+            }
+            else{
+                Toast.makeText(getActivity(), "Error retrieving tasks", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void updateAllTasks(String s){
+        new getTasksbyCalendarID(s).execute();
+        adapter.notifyDataSetChanged();
+    }
+
 
     /**
      * Interface for instantiating activites to implement to communicate with this fragment.

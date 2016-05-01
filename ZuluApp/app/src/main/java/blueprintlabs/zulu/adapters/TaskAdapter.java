@@ -19,13 +19,10 @@ import android.widget.TextView;
 import blueprintlabs.zulu.DialogAddTask;
 import blueprintlabs.zulu.FragmentTasks;
 import blueprintlabs.zulu.R;
-import blueprintlabs.zulu.resources.Task;
-import blueprintlabs.zulu.resources.User;
+import blueprint.zulu.util.*;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link User} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
+ * {@link RecyclerView.Adapter} that can display a {@link User}.
  */
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
@@ -59,8 +56,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     public void onBindViewHolder(final ViewHolder holder, int position) {
         if(getItemViewType(position) == VIEW_TYPE_CELL){
             holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).ID);
-            holder.mContentView.setText(mValues.get(position).description);
+            holder.mIdView.setText(mValues.get(position).getID());
+            holder.mContentView.setText(mValues.get(position).getDesc());
             holder.iV.setVisibility(View.GONE);
 
             holder.mView.setOnClickListener(new View.OnClickListener() {

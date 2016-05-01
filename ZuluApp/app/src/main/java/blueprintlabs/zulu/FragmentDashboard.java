@@ -1,6 +1,5 @@
 package blueprintlabs.zulu;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -18,8 +17,7 @@ import android.view.ViewGroup;
 
 
 import blueprintlabs.zulu.adapters.DashboardAdapter;
-import blueprintlabs.zulu.resources.Action;
-import blueprintlabs.zulu.resources.Message;
+import blueprint.zulu.util.Action;
 
 import java.util.ArrayList;
 

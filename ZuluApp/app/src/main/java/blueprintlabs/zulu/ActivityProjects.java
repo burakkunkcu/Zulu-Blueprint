@@ -19,8 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import blueprintlabs.zulu.adapters.ProjectsAdapter;
-import blueprintlabs.zulu.resources.Project;
-import blueprintlabs.zulu.resources.User;
+import blueprint.zulu.util.*;
 import blueprintlabs.zulu.socket.Client;
 
 public class ActivityProjects extends AppCompatActivity implements ProjectsAdapter.OnListFragmentInteractionListener{
@@ -97,10 +96,12 @@ public class ActivityProjects extends AppCompatActivity implements ProjectsAdapt
 
         @Override
         protected User doInBackground(Void... params) {
-            Client client = new Client("user", "get", args);
+            Client client = new Client("user", "getbyemail", args);
             client.start();
+
             User user = (User) client.getResult(); //returns null
             System.out.println("------------user-------------");
+            System.out.println(mEmail);
             System.out.println(client.getResult());
             System.out.println("--------------user-----------");
             return user;

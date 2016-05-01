@@ -1,6 +1,7 @@
 package blueprintlabs.zulu;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,10 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import blueprintlabs.zulu.adapters.TaskAdapter;
-import blueprintlabs.zulu.resources.Task;
-import blueprintlabs.zulu.resources.User;
+import blueprint.zulu.util.*;
+import blueprintlabs.zulu.socket.Client;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +25,12 @@ import java.util.List;
  */
 public class FragmentTasks extends Fragment {
 
-    // TODO: Customize parameter argument names
+
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    List<Task> data;
+    TaskAdapter adapter;
 
     Button bttnAdd;
 
@@ -66,14 +69,11 @@ public class FragmentTasks extends Fragment {
         View view = inflater.inflate(R.layout.fragment_person_list, container, false);
 
         ActivityProjectView parent = (ActivityProjectView) getActivity();
+        String calendarID = parent.globalProject.getCalendar();
 
-        List<Task> data = parent.globalProject.getTasks();
+        updateTasks(calendarID);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
-        //TaskAdapter adapter = new TaskAdapter(data, mListener);
-        //recyclerView.setAdapter(adapter);
-
-
+        adapter = new TaskAdapter(data, mListener, FragmentTasks.this);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -84,7 +84,7 @@ public class FragmentTasks extends Fragment {
             } else {
                 aaa.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            aaa.setAdapter(new TaskAdapter(data, mListener, FragmentTasks.this));
+            aaa.setAdapter(adapter);
 
         }
         return view;
@@ -106,6 +106,38 @@ public class FragmentTasks extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public class getTasksbyCalendarID extends AsyncTask<Void, Void, ArrayList<Task>>{
+        private final String[] args;
+
+        public getTasksbyCalendarID(String ID){
+            args = new String[1];
+            args[0] = ID;
+        }
+
+        @Override
+        protected ArrayList<Task> doInBackground(Void... params) {
+            Client client = new Client("calendar", "gettasks", args);
+            client.start();
+            ArrayList<Task> result = (ArrayList<Task>) client.getResult();
+            return  result;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Task> tasks) {
+            if(tasks != null){
+                data = tasks;
+            }
+            else{
+                Toast.makeText(getActivity(), "Error retrieving tasks", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void updateTasks(String s){
+        new getTasksbyCalendarID(s).execute();
+        adapter.notifyDataSetChanged();
     }
 
     /**

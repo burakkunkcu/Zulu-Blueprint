@@ -18,8 +18,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import blueprintlabs.zulu.adapters.ChatAdapter;
-import blueprintlabs.zulu.resources.Message;
-import blueprintlabs.zulu.resources.Project;
+import blueprint.zulu.util.*;
 import blueprintlabs.zulu.socket.Client;
 
 

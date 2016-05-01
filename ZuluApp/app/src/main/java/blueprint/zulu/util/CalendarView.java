@@ -1,4 +1,4 @@
-package blueprintlabs.zulu.resources;
+package blueprint.zulu.util;
 
 import android.content.Context;
 import android.content.res.TypedArray;
