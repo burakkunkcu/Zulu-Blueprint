@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import blueprintlabs.zulu.resources.Task;
@@ -31,11 +32,14 @@ public class DialogMeetup extends DialogFragment{
 
         //TODO GET AVAILABLE TIMES AS AN ARRAYLIST FROM THE SERVER
 
-        ArrayList<Integer> avaliableHours = new ArrayList<Integer>();
+        ActivityProjectView activity = (ActivityProjectView) getActivity();
+
+
+        final ArrayList<Date> avaliableHours = activity.getMeetupDates();
 
         lw = (ListView) view.findViewById(R.id.times);
 
-        lw.setAdapter(new ArrayAdapter<Integer>(getActivity(), android.R.layout.simple_list_item_1, avaliableHours));
+        lw.setAdapter(new ArrayAdapter<Date>(getActivity(), android.R.layout.simple_list_item_1, avaliableHours));
         lw.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
         // Inflate and set the layout for the dialog
@@ -45,9 +49,8 @@ public class DialogMeetup extends DialogFragment{
                 .setPositiveButton("MEETUP!", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        Integer i = (Integer) lw.getSelectedItem();
-                        //TODO SEND i TO THE SERVER AND SET NEW EVENT TO EVERYONE IN THE PROJECT
-                        //TODO THEN CLOSE THE VIEW
+                        int i = avaliableHours.indexOf(lw.getSelectedItem());
+
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

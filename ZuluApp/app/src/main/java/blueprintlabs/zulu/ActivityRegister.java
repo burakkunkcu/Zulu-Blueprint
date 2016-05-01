@@ -35,6 +35,8 @@ public class ActivityRegister extends AppCompatActivity {
         regName = (EditText) findViewById(R.id.regName);
         regButton = (Button) findViewById(R.id.regbutton);
 
+        getActionBar().setTitle("REGISTER");
+
         regButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -12,9 +12,11 @@ import android.view.ViewGroup;
 
 
 import blueprintlabs.zulu.adapters.UserAdapter;
+import blueprintlabs.zulu.resources.Task;
 import blueprintlabs.zulu.resources.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -61,6 +63,11 @@ public class FragmentUsers extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.user_row, container, false);
 
+        ActivityProjectView parent = (ActivityProjectView) getActivity();
+
+        List<User> users = parent.globalProject.getUsers();
+
+
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -70,7 +77,7 @@ public class FragmentUsers extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new UserAdapter(new ArrayList<blueprintlabs.zulu.resources.User>(), mListener));
+            recyclerView.setAdapter(new UserAdapter(users, mListener));
         }
         return view;
     }

@@ -9,8 +9,8 @@ import android.os.Parcelable;
 public class Task implements Parcelable{
 
     // properties
-    private String ID;
-    private String description;
+    public String ID;
+    public String description;
     private String date;
     private int progress;
     private boolean active;

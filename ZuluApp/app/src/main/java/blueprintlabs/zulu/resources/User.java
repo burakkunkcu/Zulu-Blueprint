@@ -6,10 +6,12 @@ import java.util.ArrayList;
  * Created by Ahmet Burak on 23.4.2016.
  */
 public class User {
+    public static final String MEETUP_PERMISSION = "meetup";
 
     public final String name;
     public final String desc;
     public int imageID;
+    public ArrayList<Project> projects;
     private ArrayList<String> divisions;
     private ArrayList<String> permissions;
     private int calendar;
@@ -43,6 +45,10 @@ public class User {
         return this.id;
     }
 
+    public ArrayList<String> getPermissions(){
+        return permissions;
+    }
+
     public String getName()
     {
         return this.name;
@@ -51,6 +57,10 @@ public class User {
     public String getDesc()
     {
         return this.desc;
+    }
+
+    public ArrayList<Task> getTasks(){
+        return new ArrayList<Task>();
     }
 
     public boolean hasPermission( String perm)
@@ -98,6 +108,10 @@ public class User {
         result = result + "Calendar: " + getCalendar() + "\n";
 
         return result;
+    }
+
+    public ArrayList<Project> getProjects(){
+        return projects;
     }
 
     public static User getByID( int id)

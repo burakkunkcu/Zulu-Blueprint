@@ -1,6 +1,7 @@
 package blueprintlabs.zulu;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -11,12 +12,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 
 import blueprintlabs.zulu.resources.CalendarView;
 import blueprintlabs.zulu.resources.User;
+import blueprintlabs.zulu.socket.Client;
 
 
 /**
@@ -39,6 +44,7 @@ public class FragmentCalendar extends Fragment {
     CalendarView cv;
     Button newEventButton;
     Button meetupButton;
+    ArrayList<Date> meetupList;
 
     private OnFragmentInteractionListener mListener;
 
@@ -113,6 +119,12 @@ public class FragmentCalendar extends Fragment {
         newEventButton = (Button)view.findViewById(R.id.button_newevent);
         meetupButton = (Button) view.findViewById(R.id.button_meetup);
 
+        ActivityProjectView activity = (ActivityProjectView) getActivity();
+        ArrayList<String> permissions = activity.globalUser.getPermissions();
+        if(permissions.indexOf(User.MEETUP_PERMISSION) < 0){
+            meetupButton.setEnabled(false);
+        }
+
         newEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,17 +151,23 @@ public class FragmentCalendar extends Fragment {
             @Override
             public void onClick(View v) {
                 if(cv.selectedDate != null) {
-                    Bundle args = new Bundle();
-                    //set clicked days date and month to arguments to the dialog fragment
-                    Date today = cv.selectedDate;
-                    DialogMeetup box = new DialogMeetup();
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd MMMMMM");
-                    args.putString("date", sdf.format(((Date) today)));
-                    box.setArguments(args);
+                    if (meetupButton.isEnabled()) {
+                        Bundle args = new Bundle();
+                        //set clicked days date and month to arguments to the dialog fragment
+                        Date today = cv.selectedDate;
+                        DialogMeetup box = new DialogMeetup();
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd MMMMMM");
+                        args.putString("date", sdf.format(((Date) today)));
+                        box.setArguments(args);
 
-                    FragmentActivity activity = (FragmentActivity) (getActivity());
-                    FragmentManager fm = activity.getSupportFragmentManager();
-                    box.show(activity.getFragmentManager(), "meetupbox");
+                        FragmentActivity activity = (FragmentActivity) (getActivity());
+                        FragmentManager fm = activity.getSupportFragmentManager();
+                        box.show(activity.getFragmentManager(), "meetupbox");
+                    }
+                    else{
+                        //Toast.makeText(getActivity(), "You don't have the permission to arrange a meetup.", Toast.LENGTH_SHORT).show();
+                        meetupButton.setError("You don't have permission to arrange a meetup");
+                    }
                 }
                 else{
                     Toast.makeText(getActivity(), "Please select a day first!", Toast.LENGTH_SHORT).show();
@@ -186,6 +204,36 @@ public class FragmentCalendar extends Fragment {
         mListener = null;
     }
 
+    public class MeetupTask extends AsyncTask<Void, Void, ArrayList<Date>>{
+        final String[] args;
+
+        public MeetupTask(){
+            args = new String[2];
+            args[0] = ((ActivityProjectView)getActivity()).globalProject.getID();
+            Gson gson = new Gson();
+            String jsonInString = gson.toJson(new Date());
+            args[1] = (new Date()).toString();
+        }
+
+        @Override
+        protected ArrayList<Date> doInBackground(Void... params) {
+            Client client = new Client("calendar", "meetup", args);
+            client.start();
+            client.run();
+            return (ArrayList<Date>) client.getResult();
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Date> result) {
+            if(result != null){
+                meetupList = result;
+            }
+        }
+    }
+
+    public ArrayList<Date> getMeetupList(){
+        return meetupList;
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

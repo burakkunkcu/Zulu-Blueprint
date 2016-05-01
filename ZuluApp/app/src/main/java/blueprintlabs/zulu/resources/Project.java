@@ -24,9 +24,9 @@ public class Project
         this.calendar = calendar;
     }
 
-    public int getID()
+    public String getID()
     {
-        return this.id;
+        return this.name;
     }
 
     public String getName()
@@ -39,9 +39,13 @@ public class Project
         return this.desc;
     }
 
-    public ArrayList<Integer> getUsers()
+    public ArrayList<Task> getTasks(){
+        return new ArrayList<Task>();
+    }
+
+    public ArrayList<User> getUsers()
     {
-        return this.users;
+        return new ArrayList<User>();
     }
 
     public int getleaderID()

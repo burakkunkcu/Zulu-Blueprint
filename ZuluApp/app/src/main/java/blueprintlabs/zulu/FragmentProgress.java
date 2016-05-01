@@ -14,6 +14,7 @@ import blueprintlabs.zulu.adapters.ProgressAdapter;
 import blueprintlabs.zulu.resources.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -60,27 +61,11 @@ public class FragmentProgress extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_progressitem, container, false);
 
-        ArrayList<Task> user = new ArrayList<Task>();
-        ArrayList<Task> total = new ArrayList<Task>();
-        Task t1 = new Task("Task 1", "", 51, true);
-        Task t2 = new Task("Task 2", "", 99, true);
-        Task t3 = new Task("Task 3", "", 31, true);
-        Task t4 = new Task("Task 4", "", 32, true);
-        Task t5 = new Task("Task 5", "", 12, true);
-        Task t6 = new Task("Task 6", "", 76, true);
-        Task t7 = new Task("Task 7", "", 81, true);
-        Task t8 = new Task("Task 8", "", 39, true);
-        user.add(t1);
-        user.add(t7);
-        user.add(t6);
-        total.add(t1);
-        total.add(t2);
-        total.add(t3);
-        total.add(t4);
-        total.add(t5);
-        total.add(t6);
-        total.add(t7);
-        total.add(t8);
+        ActivityProjectView parent = (ActivityProjectView) getActivity();
+
+        List<Task> total = parent.globalProject.getTasks();
+
+        List<Task> user = parent.globalUser.getTasks();
 
         // Set the adapter
         if (view instanceof RecyclerView) {

@@ -30,13 +30,21 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import blueprintlabs.zulu.resources.Auth;
+import blueprintlabs.zulu.socket.Client;
 import blueprintlabs.zulu.resources.Project;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static android.Manifest.permission.SYSTEM_ALERT_WINDOW;
 
 /**
  * A login screen that offers login via email/password.
@@ -49,13 +57,6 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
     private static final int REQUEST_READ_CONTACTS = 0;
 
     /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
@@ -65,6 +66,11 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +81,7 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
         populateAutoComplete();
 
         //If returning from register screen set the email to new account's
-        if(getIntent().getBooleanExtra("fromreg", false)){
+        if (getIntent().getBooleanExtra("fromreg", false)) {
             mEmailView.setText(getIntent().getStringExtra("email"));
         }
 
@@ -99,8 +105,20 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        Button registerButton = (Button) findViewById(R.id.register);
+        registerButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ActivityLogin.this, ActivityRegister.class);
+                startActivity(intent);
+            }
+        });
+
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     private void populateAutoComplete() {
@@ -120,7 +138,7 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
             Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                    .setAction(android.R.string.ok, new OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
                         public void onClick(View v) {
@@ -286,6 +304,46 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "ActivityLogin Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://blueprintlabs.zulu/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "ActivityLogin Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://blueprintlabs.zulu/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
+    }
+
 
     private interface ProfileQuery {
         String[] PROJECTION = {
@@ -306,34 +364,46 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
         private final Context context;
         private final String mEmail;
         private final String mPassword;
+        String[] aaa = new String[2];
 
         UserLoginTask(String email, String password, Context context) {
             mEmail = email;
             mPassword = password;
             this.context = context;
+            aaa[0] = mEmail;
+            aaa[1] = mPassword;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+
+            Client client = new Client("login", "salt", aaa);
+            client.start();
+            client.run();
+            byte[] salt = (byte[]) client.getResult();
+            System.out.println("------------------------------------");
+            System.out.println(salt);
+            System.out.println("------------------------------------");
+            if (salt != null){
+                char[] pw = mPassword.toCharArray();
+                byte[] hash = Auth.hash(pw, salt);
+                String s = new String(hash);
+                aaa[1] = s;
+                String tempHash = new String(hash);
+                Client client2  = new Client("login", "login", aaa);
+                client2.start();
+                client2.run();
+                boolean aaaa = (boolean)client2.getResult();
+                System.out.println("------------------------------------");
+                System.out.println(aaaa);
+                System.out.println("------------------------------------");
+                return aaaa;
+            }
+            else{
                 return false;
             }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
         }
 
         @Override
@@ -342,12 +412,12 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
-                Intent intent = new Intent(context ,ActivityProjects.class);
-                //TODO GET THE AUTHORIZATION INFORMATION
-                Project[] userProjects = new Project[1];
+                Intent intent = new Intent(context, ActivityProjects.class);
+                intent.putExtra("email", mEmail);
                 startActivity(intent);
                 finish();
             } else {
+                Toast.makeText(ActivityLogin.this, "Incorrect credentials", Toast.LENGTH_SHORT).show();
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }

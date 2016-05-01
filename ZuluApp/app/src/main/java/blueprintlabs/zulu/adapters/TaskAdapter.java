@@ -19,6 +19,7 @@ import android.widget.TextView;
 import blueprintlabs.zulu.DialogAddTask;
 import blueprintlabs.zulu.FragmentTasks;
 import blueprintlabs.zulu.R;
+import blueprintlabs.zulu.resources.Task;
 import blueprintlabs.zulu.resources.User;
 
 /**
@@ -28,13 +29,13 @@ import blueprintlabs.zulu.resources.User;
  */
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
-    private final List<User> mValues;
+    private final List<Task> mValues;
     private final FragmentTasks.OnListFragmentInteractionListener mListener;
     private final int VIEW_TYPE_FOOTER = 1;
     private final int VIEW_TYPE_CELL = 0;
     FragmentTasks context;
 
-    public TaskAdapter(List<User> items, FragmentTasks.OnListFragmentInteractionListener listener, FragmentTasks aa) {
+    public TaskAdapter(List<Task> items, FragmentTasks.OnListFragmentInteractionListener listener, FragmentTasks aa) {
         mValues = items;
         mListener = listener;
         context = aa;
@@ -58,9 +59,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     public void onBindViewHolder(final ViewHolder holder, int position) {
         if(getItemViewType(position) == VIEW_TYPE_CELL){
             holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).name);
-            holder.mContentView.setText(mValues.get(position).desc);
-            holder.iV.setImageResource(mValues.get(position).imageID);
+            holder.mIdView.setText(mValues.get(position).ID);
+            holder.mContentView.setText(mValues.get(position).description);
+            holder.iV.setVisibility(View.GONE);
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -107,7 +108,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public User mItem;
+        public Task mItem;
         ImageView iV;
 
         CardView cv;
@@ -127,7 +128,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         }
     }
 
-    public void insert(int position, User data) {
+    public void insert(int position, Task data) {
         mValues.add(position, data);
         notifyItemInserted(position);
     }

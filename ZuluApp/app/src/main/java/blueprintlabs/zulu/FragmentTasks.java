@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import blueprintlabs.zulu.adapters.TaskAdapter;
+import blueprintlabs.zulu.resources.Task;
 import blueprintlabs.zulu.resources.User;
 
 import java.util.ArrayList;
@@ -54,6 +55,8 @@ public class FragmentTasks extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -64,9 +67,9 @@ public class FragmentTasks extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_person_list, container, false);
 
-        List<User> data = fill_with_data();
+        ActivityProjectView parent = (ActivityProjectView) getActivity();
 
-        data.add(new User("", "", R.drawable.ic_action_movie));
+        List<Task> data = parent.globalProject.getTasks();
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
         //TaskAdapter adapter = new TaskAdapter(data, mListener);
@@ -89,22 +92,6 @@ public class FragmentTasks extends Fragment {
         return view;
     }
 
-
-
-    public List<User> fill_with_data() {
-
-        ArrayList<User> data = new ArrayList<>();
-
-        data.add(new User("Batman vs Superman", "Following the destruction of Metropolis, Batman embarks on a personal vendetta against Superman ", R.drawable.ic_action_movie));
-
-        data.add(new User("Warcraft", "Fleeing their dying home to colonize another, fearsome orc warriors invade the peaceful realm of Azeroth. ", R.drawable.ic_action_movie));
-        data.add(new User("Alice in Wonderland", "Alice in Wonderland: Through the Looking Glass ", R.drawable.ic_action_movie));
-        data.add(new User("Batman vs Superman", "Following the destruction of Metropolis, Batman embarks on a personal vendetta against Superman ", R.drawable.ic_action_movie));
-        data.add(new User("Batman vs Superman", "Following the destruction of Metropolis, Batman embarks on a personal vendetta against Superman ", R.drawable.ic_action_movie));
-
-
-        return data;
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -135,6 +122,6 @@ public class FragmentTasks extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(User item);
+        void onListFragmentInteraction(Task item);
     }
 }
