@@ -30,7 +30,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
 
     public void add(Action action){
        mValues.add(action);
-       notifyItemInserted(mValues.size() - 1);
+       notifyDataSetChanged();
     }
 
     @Override

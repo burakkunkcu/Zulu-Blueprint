@@ -8,12 +8,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import java.util.ArrayList;
+import java.util.Date;
+
 import blueprint.zulu.util.*;
 
 /**
@@ -36,14 +40,9 @@ public class DialogNewEvent extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_newevent, null);
 
-        //TODO GET AVAILABLE TIMES AS AN ARRAYLIST FROM THE SERVER
+        final Bundle args = getArguments();
 
-        Bundle args = getArguments();
-
-        textInput = (EditText) view.findViewById(R.id.editText);
-        startingTime = (Spinner) view.findViewById(R.id.spinner1);
-        finishingTime = (Spinner) view.findViewById(R.id.spinner2);
-        date = (TextView) view.findViewById(R.id.date);
+        TextView date = (TextView) view.findViewById(R.id.date);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, HOURS);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -51,7 +50,7 @@ public class DialogNewEvent extends DialogFragment {
 
         startingTime.setAdapter(adapter);
         finishingTime.setAdapter(adapter);
-        date.setText(args.getString("date"));
+        date.setText("" + args.getInt("date") + " " + args.getString("month"));
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         builder.setView(view)
@@ -59,11 +58,18 @@ public class DialogNewEvent extends DialogFragment {
                 .setPositiveButton("Create", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        String start_time = (String) startingTime.getSelectedItem();
-                        String end_time = (String) startingTime.getSelectedItem();
+                        Dialog f = (Dialog) dialog;
+
+                        Date d0 = new Date(196, 4, args.getInt("date"));
+                        final TimePicker d1 = (TimePicker) f.findViewById(R.id.spinner1);
+                        final TimePicker d2 = (TimePicker) f.findViewById(R.id.spinner2);
+                        final EditText textInput = (EditText) f.findViewById(R.id.editText);
+                        Date start_time = new Date(d0.getYear(), d0.getMonth(), d0.getDate(), d1.getCurrentHour(), d1.getCurrentMinute());
+                        Date finish_time = new Date(d0.getYear(), d0.getMonth(), d0.getDate(), d2.getCurrentHour(), d2.getCurrentMinute());
                         String desc = textInput.getText().toString();
 
-                        //TODO SEND REQUEST TO SERVER TO CREATE NEW EVENT
+                        ActivityProjectView activity = (ActivityProjectView) getActivity();
+                        activity.addEvent(desc, start_time, finish_time);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

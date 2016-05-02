@@ -38,7 +38,7 @@ public class FragmentChat extends Fragment {
     private ListView lw;
     private Button button;
     private EditText input;
-    private ChatAdapter adapter;
+    ChatAdapter adapter;
 
 
     private String mParam1;
@@ -67,6 +67,8 @@ public class FragmentChat extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        adapter = new ChatAdapter(getActivity().getApplicationContext(), R.layout.chat_right);
     }
 
     @Override
@@ -79,9 +81,6 @@ public class FragmentChat extends Fragment {
         input = (EditText) view.findViewById(R.id.message);
         lw = (ListView) view.findViewById(R.id.messages);
 
-
-
-        adapter = new ChatAdapter(getActivity().getApplicationContext(), R.layout.chat_right);
         lw.setAdapter(adapter);
 
         input = (EditText) view.findViewById(R.id.message);
@@ -137,8 +136,13 @@ public class FragmentChat extends Fragment {
      * These 3 methods update the view with incoming message.
      */
     boolean sendChatMessage() {
-        adapter.add(new Message(input.getText().toString(), "NAME OF THE CURRENT USER HERE"));
+        ActivityProjectView activity = (ActivityProjectView) getActivity();
+        adapter.add(new Message(input.getText().toString(), activity.globalUser.getName()));
+
+        activity.sendMessageBroadcast(activity.globalUser.getName(), input.getText().toString());
+
         input.setText("");
+
         return true;
     }
 

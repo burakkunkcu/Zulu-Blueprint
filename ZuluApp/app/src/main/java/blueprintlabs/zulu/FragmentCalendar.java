@@ -39,6 +39,8 @@ public class FragmentCalendar extends Fragment {
     Button newEventButton;
     Button meetupButton;
     ArrayList<Date> meetupList;
+    HashSet<Date> data;
+    ArrayList<Task> taskData;
 
     private OnFragmentInteractionListener mListener;
 
@@ -55,6 +57,7 @@ public class FragmentCalendar extends Fragment {
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -65,6 +68,9 @@ public class FragmentCalendar extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        data = new HashSet<Date>();
+        taskData = new ArrayList<Task>();
     }
 
     @Override
@@ -75,21 +81,11 @@ public class FragmentCalendar extends Fragment {
 
         cv = (CalendarView) view.findViewById(R.id.calendar_view);
 
+        ActivityProjectView activity = (ActivityProjectView) getActivity();
+        String calendarID = activity.globalUser.getCalendar();
+        updateDates(calendarID);
 
-        //Dummy variables
-        HashSet<Date> aa = new HashSet<Date>();
-        aa.add(new Date());
-        aa.add(new Date(116, 3, 11));
-        aa.add(new Date(116, 3, 30));
-        aa.add(new Date(116, 3, 2));
-
-        HashSet<Date> bb = new HashSet<Date>();
-        aa.add(new Date());
-        aa.add(new Date(116, 3, 2));
-        aa.add(new Date(116, 3, 7));
-        aa.add(new Date(116, 3, 27));
-
-        cv.updateCalendar(aa, bb);
+        cv.updateCalendar(data, data);
 
         newEventButton = (Button)view.findViewById(R.id.button_newevent);
         meetupButton = (Button) view.findViewById(R.id.button_meetup);
@@ -156,6 +152,9 @@ public class FragmentCalendar extends Fragment {
         return view;
     }
 
+    public void refresh(){
+        cv.updateCalendar(data, data);
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -172,6 +171,40 @@ public class FragmentCalendar extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public class getTasksbyCalendarID extends AsyncTask<Void, Void, ArrayList<Task>>{
+        private final String[] args;
+
+        public getTasksbyCalendarID(String ID){
+            args = new String[1];
+            args[0] = ID;
+        }
+
+        @Override
+        protected ArrayList<Task> doInBackground(Void... params) {
+            Client client = new Client("calendar", "gettasks", args);
+            client.start();
+            ArrayList<Task> result = (ArrayList<Task>) client.getResult();
+            return  result;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Task> tasks) {
+            if(tasks != null){
+                taskData = tasks;
+            }
+            else{
+                Toast.makeText(getActivity(), "Error retrieving tasks", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void updateDates(String s){
+        new getTasksbyCalendarID(s).execute();
+        for (Task t : taskData){
+            data.add(t.getDate());
+        }
     }
 
     //Call a date to arrange a meetup at that date

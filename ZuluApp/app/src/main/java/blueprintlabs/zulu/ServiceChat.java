@@ -17,6 +17,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import blueprintlabs.zulu.socket.Client;
 
 /**
  * This service runs in the background and listens to incoming messages from the chat server, and broadcasts received messages in the app
@@ -32,6 +37,7 @@ public class ServiceChat extends Service {
     Socket socket;
     BufferedReader in;
     BufferedWriter out;
+    String projectID;
 
     Thread inputThread;
     Thread outputThread;
@@ -46,6 +52,7 @@ public class ServiceChat extends Service {
     public void onCreate() {
         super.onCreate();
 
+
         serviceReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -53,8 +60,10 @@ public class ServiceChat extends Service {
                     out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
                     String m = intent.getStringExtra("message");
                     String s = intent.getStringExtra("sender");
-                    out.write("m");
-                    out.write("s");
+                    String p = intent.getStringExtra("projectID");
+                    String[] args = {s, m, p};
+                    Client client = new Client("chat", "send", args);
+                    client.start();
                 }
                 catch(IOException e){
                     e.printStackTrace();
@@ -67,44 +76,55 @@ public class ServiceChat extends Service {
             registerReceiver(serviceReceiver, intentFilter);
         }
 
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
         try {
             socket = new Socket(HOST, PORT);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+
+            socket.setKeepAlive(true);
 
             //Listen for incoming messages on a new thread
             inputThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     String s = null;
-                    try {
-                        while ((s = in.readLine()) != null) {
-                            //Not yet implemented
+                    Timer updateCheckerTimer = new Timer(true);
+                    updateCheckerTimer.scheduleAtFixedRate(new TimerTask(){
+                        public void run(){
+                            if(projectID != null) {
+                                String args[] = {projectID};
+                                Client c = new Client("chat", "getmessages", args);
+                                c.start();
+                                ArrayList<String> messages = (ArrayList<String>) c.getResult();
+                                for (String s : messages){
+                                    sendBroadcastMessage(SERVICE_MESSAGE, s.split(":")[0],s.split(":")[2]);
+                                }
+
+                                String args2[] = {projectID};
+                                Client c2 = new Client("chat", "getmessages", args);
+                                c.start();
+                                ArrayList<String> updates = (ArrayList<String>) c.getResult();
+                                for (String s : updates){
+                                    sendBroadcastMessage(UPDATE_MESSAGE, s, "");
+                                }
+                            }
                         }
-                    }
-                    catch(IOException e){
-                        e.printStackTrace();
-                    }
+                    }, 0 , 20 * 1000);
                 }
             });
 
-            //Listen to outgoing messages on a new thread
-            outputThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    //Not yet implemented
-                }
-            });
             inputThread.start();
             outputThread.start();
         }
         catch (IOException e){
             e.printStackTrace();
         }
-    }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -147,5 +167,9 @@ public class ServiceChat extends Service {
             // Return this instance of LocalService so clients can call public methods
             return ServiceChat.this;
         }
+    }
+
+    public void setProjectID(String s){
+        projectID = s;
     }
 }

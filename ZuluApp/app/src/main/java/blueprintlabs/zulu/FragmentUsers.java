@@ -26,7 +26,7 @@ public class FragmentUsers extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    private ArrayList<User> projectsUsers = new ArrayList<User>();
+    private ArrayList<User> projectsUsers;
     UserAdapter adapter;
 
     /**
@@ -50,6 +50,8 @@ public class FragmentUsers extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        projectsUsers = new ArrayList<User>();
+
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -64,7 +66,7 @@ public class FragmentUsers extends Fragment {
 
         List<String> users_string = parent.globalProject.getUsers();
 
-        adapter = new UserAdapter(projectsUsers, mListener);
+        adapter = new UserAdapter(projectsUsers, mListener, this);
 
         UpdateUsers(users_string);
 

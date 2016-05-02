@@ -35,7 +35,7 @@ public class FragmentDashboard extends Fragment {
 
 
     private OnListFragmentInteractionListener mListener;
-    private DashboardAdapter adapter;
+    DashboardAdapter adapter;
     NotificationCompat.Builder mBuilder;
     StringBuilder notif = new StringBuilder();
     ArrayList<Action> items;

@@ -124,6 +124,7 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             ServiceChat.LocalBinder binder = (ServiceChat.LocalBinder) service;
             ServiceChat mService = binder.getService();
+            mService.setProjectID(globalProject.getID());
             mBound = true;
         }
 
@@ -349,13 +350,28 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
     //attach/detach all fragments to force redrawing of all fragments
     private void refresh(){
         for(int i = 0; i <= 5; i++){
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             Fragment fragment = mSectionsPagerAdapter.getRegisteredFragment(i);
             if(fragment != null) {
-                ft.attach(fragment).detach(fragment).commit();
-            }
-            else{
-                System.out.println("Error reresh: " + i);
+                if (fragment instanceof FragmentChat) {
+                    FragmentChat f = (FragmentChat) fragment;
+                    f.adapter.notifyDataSetChanged();
+                } else if (fragment instanceof FragmentCalendar) {
+                    FragmentCalendar f = (FragmentCalendar) fragment;
+                    f.refresh();
+                } else if (fragment instanceof FragmentTasks){
+                    FragmentTasks f = (FragmentTasks) fragment;
+                    f.adapter.notifyDataSetChanged();
+                } else if (fragment instanceof FragmentDashboard){
+                    FragmentDashboard f = (FragmentDashboard) fragment;
+                    f.adapter.notifyDataSetChanged();
+                } else if (fragment instanceof FragmentProgress){
+                    FragmentProgress f = (FragmentProgress) fragment;
+                    f.adapter.notifyDataSetChanged();
+                } else if (fragment instanceof FragmentUsers){
+                    FragmentUsers f = (FragmentUsers) fragment;
+                    f.adapter.notifyDataSetChanged();
+                }
+
             }
         }
     }
@@ -619,9 +635,41 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
         }
     }
 
+
+    public class addUsertoProject extends AsyncTask<Void, Void, Void>{
+        private String[] args;
+
+        public addUsertoProject(String email){
+            args = new String[2];
+            args[0] = globalProject.getID();
+            args[1] = email;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            Client client = new Client("project", "adduserbyemail", args);
+            client.start();
+            System.out.println("");
+            return (Void) null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+    }
+
+    public void addUser(String email){
+        new addUsertoProject(email).execute();
+    }
+
     public void addTaskMethod(String name, String email, Date date){
         new newTask(name, email, date).execute();
         System.out.println("--------1-------" + email);
+    }
+
+    public void addEvent(String s, Date d1, Date d2){
+        new newTaskContinuous(s, d1, d2).execute();
     }
 
     public void onListFragmentInteraction(User item){}

@@ -134,7 +134,7 @@ public class FragmentTasks extends Fragment {
 
     private void updateTasks(String s){
         new getTasksbyCalendarID(s).execute();
-        adapter.notifyItemInserted(data.size() - 1);
+        adapter.notifyDataSetChanged();
     }
 
     /**
