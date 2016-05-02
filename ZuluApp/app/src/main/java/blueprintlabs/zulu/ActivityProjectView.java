@@ -82,6 +82,7 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
      */
     private boolean mBound = false;
     private ServiceChat mService;
+    private User methodUser;
 
     //Receives the service broadcasts from {@Link ServiceChat} and {@Link ServiceNotification} and carries passes them to their respective fragments
     private BroadcastReceiver messageReceiver = new BroadcastReceiver(){
@@ -431,37 +432,51 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
     }
 
     public class getUserbyEmailTask extends AsyncTask<Void, Void, User> {
-        private final String mEmail;
-        private final String[] args;
+        private String mEmail;
+        private String[] args;
         private User foundUser;
+        private String extra;
 
         public getUserbyEmailTask(String email){
             mEmail = email;
             args = new String[1];
             args[0] = mEmail;
+            extra = "";
+        }
+
+        public getUserbyEmailTask(String email, String extra){
+            System.out.println("----------" + email);
+            mEmail = email;
+            args = new String[1];
+            args[0] = mEmail;
+            this.extra = extra;
+            System.out.println("cccccccccccccccc" + mEmail);
         }
 
         @Override
         protected User doInBackground(Void... params) {
+            System.out.println("ccasdasdasdasd");
             Client client = new Client("user", "getbyemail", args);
+            System.out.println("bbbbbbbbb");
             client.start();
+            System.out.println("11111111111111");
             User user = (User) client.getResult();
-            System.out.println("---------asyncats------------");
-            System.out.println(mEmail);
-            System.out.println(user);
-            System.out.println("-----------sdfsdfsdf---------");
+            System.out.println("qqqqqqqqqqqqqqqqqb");
             return user;
         }
 
 
         protected void onPostExecute(User user) {
             if (user != null){
-                foundUser = user;
+                System.out.println("--------3-------");
+                String s = user.getCalendar();
+                new addTasktoUserCalendarTask(s, extra).execute();
+                System.out.println("--------4------");
             }
-        }
-
-        public User getUser(){
-            return foundUser;
+            else{
+                System.out.println(extra);
+                System.out.println("Email " + mEmail);
+            }
         }
     }
 
@@ -544,6 +559,7 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
     public class newTask extends AsyncTask<Void, Void, String>{
         final String[] args;
         String taskID;
+        String extra;
 
         public newTask(String name, Date deadline){
             args = new String[3];
@@ -552,6 +568,17 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
             String jsonInString = gson.toJson(deadline);
             args[1] = jsonInString;
             args[2] = ActivityProjectView.this.globalProject.getID();
+            this.extra = "";
+        }
+
+        public newTask(String name, String extra, Date deadline){
+            args = new String[3];
+            args[0] = name;
+            Gson gson = new Gson();
+            String jsonInString = gson.toJson(deadline);
+            args[1] = jsonInString;
+            args[2] = ActivityProjectView.this.globalProject.getID();
+            this.extra = extra;
         }
 
         @Override
@@ -559,18 +586,15 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
             Client client = new Client("task", "create", args);
             client.start();
             String s = (String) client.getResult();
-            String[] args2 = {ActivityProjectView.this.globalUser.getCalendar(), s};
-            Client client1 = new Client("calendar", "addtask", args2);
-            client1.start();
             return s;
         }
 
         @Override
         protected void onPostExecute(String s) {
             taskID = s;
+            new getUserbyEmailTask(extra, s).execute();
+            System.out.println("------------" + extra);
         }
-
-        public String getTaskID(){ return taskID;}
     }
 
     public class addTasktoUserCalendarTask extends AsyncTask<Void, Void, Void>{
@@ -591,28 +615,13 @@ public class ActivityProjectView extends AppCompatActivity implements FragmentTa
 
         @Override
         protected void onPostExecute(Void v) {
+            System.out.println("------Last---");
         }
     }
 
     public void addTaskMethod(String name, String email, Date date){
-        newTask task1 = new newTask(name, date);
-        task1.execute();
-        getUserbyEmailTask task2 = new getUserbyEmailTask(email);
-        task2.execute();
-        try {
-            task1.get();
-            task2.get();
-        }
-        catch (InterruptedException e){
-            e.printStackTrace();
-        }
-        catch (ExecutionException e){
-            e.printStackTrace();
-        }
-        User user = task2.getUser();
-        String s = user.getCalendar();
-
-        new addTasktoUserCalendarTask(s, task1.getTaskID()).execute();
+        new newTask(name, email, date).execute();
+        System.out.println("--------1-------" + email);
     }
 
     public void onListFragmentInteraction(User item){}

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.view.LayoutInflater;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
@@ -28,16 +29,23 @@ public class DialogAddTask extends DialogFragment {
 
         View view = inflater.inflate(R.layout.dialog_signin, null);
 
-        final EditText name = (EditText) view.findViewById(R.id.username);
-        final EditText desc = (EditText) view.findViewById(R.id.password);
-        final DatePicker date = (DatePicker) view.findViewById(R.id.datePicker);
+
+        TextInputEditText name = (TextInputEditText) view.findViewById(R.id.username);
+        TextInputEditText desc = (TextInputEditText) view.findViewById(R.id.password);
+        DatePicker date = (DatePicker) view.findViewById(R.id.datePicker);
 
         name.setHint("Project Name");
         desc.setHint("Project Description");
 
-        final Date datePicked = new Date(date.getYear() - 1900, date.getMonth(), date.getDayOfMonth());
+        //final Date datePicked = new Date(date.getYear() - 1900, date.getMonth(), date.getDayOfMonth());
 
         final String[] mails = desc.getText().toString().split(",");
+
+        final String naame = name.getText().toString();
+        final String desasdc = desc.getText().toString();
+
+        System.out.println("--------------------" + desc.getText().toString() + "--------------------");
+        System.out.println("--------------------" + name.getText().toString() + "--------------------");
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
@@ -46,10 +54,16 @@ public class DialogAddTask extends DialogFragment {
                 .setPositiveButton(R.string.createTask, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
+                        Dialog f = (Dialog) dialog;
+                        //This is the input I can't get text from
+                        EditText inputTemp = (EditText) f.findViewById(R.id.username);
+                        String query = inputTemp.getText().toString();
+                        EditText inputTemp2 = (EditText) f.findViewById(R.id.username);
+                        String query2 = inputTemp2.getText().toString();
+                        DatePicker date = (DatePicker) f.findViewById(R.id.datePicker);
+                        Date datePicked = new Date(date.getYear() - 1900, date.getMonth(), date.getDayOfMonth());
                         ActivityProjectView activity = (ActivityProjectView) getActivity();
-                        for(String s : mails) {
-                            activity.addTaskMethod(name.getText().toString(), s, datePicked);
-                        }
+                        activity.addTaskMethod(query, query2, datePicked);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

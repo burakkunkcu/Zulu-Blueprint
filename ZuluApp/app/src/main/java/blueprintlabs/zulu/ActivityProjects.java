@@ -108,6 +108,7 @@ public class ActivityProjects extends AppCompatActivity implements ProjectsAdapt
         protected void onPostExecute(User user) {
             if (user != null){
                 currentUser = user;
+                projectsList.clear();
                 for(String s : currentUser.getProjects()){
                     new getProjectById(s).execute();
                 }

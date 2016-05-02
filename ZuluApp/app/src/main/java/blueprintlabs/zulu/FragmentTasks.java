@@ -55,9 +55,6 @@ public class FragmentTasks extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -137,7 +134,7 @@ public class FragmentTasks extends Fragment {
 
     private void updateTasks(String s){
         new getTasksbyCalendarID(s).execute();
-        adapter.notifyDataSetChanged();
+        adapter.notifyItemInserted(data.size() - 1);
     }
 
     /**
