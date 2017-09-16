@@ -7,8 +7,8 @@
 * Ahmet Burak Çatlı(@DeepBurner)
 * Burak Künkçü (@burakkunkcu)
 * Çağan Selim Çoban (@caganselim)
-* Umut Turan
-* Elif Aygün
+* Umut Turan (@umuturan)
+* Elif Aygün (@aygunelif)
 * Berat Mert Albaba
 
 ## Project UML Diagram
